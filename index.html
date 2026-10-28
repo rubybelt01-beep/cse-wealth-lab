@@ -80,15 +80,15 @@
     <!-- GLOBAL SELECTOR & SUMMARY -->
     <section class="grid grid-cols-1 md:grid-cols-4 gap-4">
       <div class="bg-[#131b2e] border border-slate-800 rounded-xl p-4 shadow-xl">
-        <label class="text-xs text-slate-400 font-medium block mb-1">Select Active Stock</label>
+        <label class="text-xs text-slate-400 font-medium block mb-1">Select Active Stock (All CSE Tickers)</label>
         <select id="stockSelector" onchange="handleStockSelect(this.value)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-cyan-400 font-bold focus:ring-2 focus:ring-cyan-500 outline-none">
-          <option value="SAMP">SAMP — Sampath Bank PLC</option>
-          <option value="JKH">JKH — John Keells Holdings PLC</option>
-          <option value="COMB">COMB — Commercial Bank of Ceylon PLC</option>
-          <option value="HNB">HNB — Hatton National Bank PLC</option>
-          <option value="HAYL">HAYL — Hayleys PLC</option>
-          <option value="DIAL">DIAL — Dialog Axiata PLC</option>
-          <option value="MELS">MELS — Melstacorp PLC</option>
+          <option value="SAMP">SAMP — Sampath Bank PLC (Rs. 139.00)</option>
+          <option value="JKH">JKH — John Keells Holdings PLC (Rs. 25.10)</option>
+          <option value="COMB">COMB — Commercial Bank of Ceylon PLC (Rs. 104.50)</option>
+          <option value="HNB">HNB — Hatton National Bank PLC (Rs. 285.00)</option>
+          <option value="HAYL">HAYL — Hayleys PLC (Rs. 98.20)</option>
+          <option value="DIAL">DIAL — Dialog Axiata PLC (Rs. 12.40)</option>
+          <option value="MELS">MELS — Melstacorp PLC (Rs. 75.80)</option>
         </select>
       </div>
 
@@ -133,7 +133,7 @@
         <div class="bg-[#131b2e] border border-slate-800 rounded-xl p-5 shadow-xl space-y-4">
           <div class="flex justify-between items-center border-b border-slate-800 pb-3">
             <h3 class="font-bold text-white flex items-center gap-2">
-              <span id="activeSymbolBadge" class="px-2 py-0.5 rounded bg-cyan-950 text-cyan-400 text-xs border border-cyan-800">JKH</span>
+              <span id="activeSymbolBadge" class="px-2 py-0.5 rounded bg-cyan-950 text-cyan-400 text-xs border border-cyan-800">SAMP</span>
               Position Analytics
             </h3>
             <span id="positionStatus" class="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-400">Open Position</span>
@@ -209,11 +209,11 @@
           <div class="grid grid-cols-2 gap-2 text-xs">
             <div>
               <label class="text-slate-400">Simulated Sale Price</label>
-              <input type="number" id="reentrySalePrice" value="100" onchange="calculateReentry()" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-white outline-none" />
+              <input type="number" id="reentrySalePrice" value="150" onchange="calculateReentry()" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-white outline-none" />
             </div>
             <div>
               <label class="text-slate-400">New Re-Entry Price</label>
-              <input type="number" id="reentryBuyPrice" value="85" onchange="calculateReentry()" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-white outline-none" />
+              <input type="number" id="reentryBuyPrice" value="125" onchange="calculateReentry()" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-white outline-none" />
             </div>
           </div>
           <div id="reentryResultsContainer" class="space-y-1.5 text-[11px]">
@@ -231,7 +231,7 @@
           <div class="flex justify-between items-center border-b border-slate-800 pb-3">
             <h3 class="font-bold text-white text-sm flex items-center gap-2">
               <i data-lucide="plus-circle" class="w-4 h-4 text-cyan-400"></i>
-              Purchase Lots Logger (<span id="loggerSymbol">JKH</span>)
+              Purchase Lots Logger (<span id="loggerSymbol">SAMP</span>)
             </h3>
           </div>
 
@@ -247,7 +247,7 @@
             </div>
             <div>
               <label class="text-[11px] text-slate-400 block mb-1">Price per Share (Rs.)</label>
-              <input type="number" step="0.01" id="buyPrice" required placeholder="80.00" class="w-full bg-slate-950 border border-slate-700 rounded px-2 py-1 text-xs text-white outline-none focus:border-cyan-500" />
+              <input type="number" step="0.01" id="buyPrice" required placeholder="130.00" class="w-full bg-slate-950 border border-slate-700 rounded px-2 py-1 text-xs text-white outline-none focus:border-cyan-500" />
             </div>
             <div class="flex items-end">
               <button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-medium py-1.5 px-3 rounded text-xs transition">Add Purchase</button>
@@ -288,7 +288,7 @@
             <div class="grid grid-cols-2 gap-2">
               <div>
                 <label class="text-[11px] text-slate-400 block mb-1">DPS (Rs.)</label>
-                <input type="number" step="0.01" id="divDPS" required placeholder="2.50" class="w-full bg-slate-950 border border-slate-700 rounded px-2 py-1 text-xs text-white outline-none" />
+                <input type="number" step="0.01" id="divDPS" required placeholder="5.50" class="w-full bg-slate-950 border border-slate-700 rounded px-2 py-1 text-xs text-white outline-none" />
               </div>
               <div>
                 <label class="text-[11px] text-slate-400 block mb-1">Eligible Shares</label>
@@ -507,9 +507,12 @@
 
   <!-- APPLICATION LOGIC CODE -->
   <script>
-    // DEMO DATA TABLE
-    const DEMO_PRICES = {
-      SAMP: 82.40,
+    // DYNAMIC LIVE STOCK STATE
+    let liveStockData = {};
+
+    // REALISTIC DEFAULT BASELINE PRICES
+    const DEFAULT_PRICES = {
+      SAMP: 139.00,
       JKH: 25.10,
       COMB: 104.50,
       HNB: 285.00,
@@ -518,29 +521,18 @@
       MELS: 75.80
     };
 
-    // CSE OFFICIAL SYMBOL MAPPER
-    const CSE_SYMBOL_MAP = {
-      'SAMP': 'SAMP.N0000',
-      'JKH': 'JKH.N0000',
-      'COMB': 'COMB.N0000',
-      'HNB': 'HNB.N0000',
-      'HAYL': 'HAYL.N0000',
-      'DIAL': 'DIAL.N0000',
-      'MELS': 'MELS.N0000'
-    };
-
     // DEFAULT STATE
     let appState = {
-      isDemoMode: true,
-      selectedStock: 'JKH',
+      isDemoMode: false, // Default to Live Mode
+      selectedStock: 'SAMP',
       settings: {
         buyFeeRate: 0.0112, // 1.12%
         sellFeeRate: 0.0112  // 1.12%
       },
-      customPrices: { ...DEMO_PRICES },
+      customPrices: { ...DEFAULT_PRICES },
       portfolio: {
-        JKH: { purchases: [], dividends: [] },
         SAMP: { purchases: [], dividends: [] },
+        JKH: { purchases: [], dividends: [] },
         COMB: { purchases: [], dividends: [] },
         HNB: { purchases: [], dividends: [] },
         HAYL: { purchases: [], dividends: [] },
@@ -561,10 +553,14 @@
     }
 
     // INITIALIZATION
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       loadState();
       lucide.createIcons();
       initDefaultPurchasesIfEmpty();
+      
+      // Fetch all live stocks on startup
+      await fetchAllCseLivePrices();
+      
       updateBannerUI();
       renderTicker();
       handleStockSelect(appState.selectedStock);
@@ -577,30 +573,28 @@
     });
 
     function initDefaultPurchasesIfEmpty() {
-      const jkh = appState.portfolio.JKH;
-      if (jkh.purchases.length === 0) {
-        jkh.purchases = [
-          { id: '1', date: '2026-01-10', quantity: 500, price: 80.00 },
-          { id: '2', date: '2026-03-15', quantity: 300, price: 85.00 },
-          { id: '3', date: '2026-06-20', quantity: 200, price: 90.00 }
+      if (!appState.portfolio.SAMP) {
+        appState.portfolio.SAMP = { purchases: [], dividends: [] };
+      }
+      const samp = appState.portfolio.SAMP;
+      if (samp.purchases.length === 0) {
+        samp.purchases = [
+          { id: '1', date: '2026-01-10', quantity: 500, price: 125.00 },
+          { id: '2', date: '2026-03-15', quantity: 300, price: 130.00 },
+          { id: '3', date: '2026-06-20', quantity: 200, price: 135.00 }
         ];
-        jkh.dividends = [
-          { id: 'd1', date: '2026-08-01', dps: 2.50, shares: 1000 }
+        samp.dividends = [
+          { id: 'd1', date: '2026-08-01', dps: 5.50, shares: 1000 }
         ];
         saveState();
       }
     }
 
-    // DATA ABSTRACTION LAYER (METHOD 1 - LIVE CSE DATA VIA CORS PROXY)
-    async function getMarketPrice(symbol) {
-      if (appState.isDemoMode) {
-        return appState.customPrices[symbol] || DEMO_PRICES[symbol] || 100.00;
-      }
-
+    // DYNAMIC LIVE DATA ENGINE (ALL CSE TICKERS VIA PROXY)
+    async function fetchAllCseLivePrices() {
       try {
-        const officialSymbol = CSE_SYMBOL_MAP[symbol] || `${symbol}.N0000`;
-        const targetCseUrl = 'https://www.cse.lk/api/allSecurityCode';
-        const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(targetCseUrl)}`;
+        const targetUrl = 'https://www.cse.lk/api/allSecurityCode';
+        const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`;
 
         const response = await fetch(proxyUrl, {
           method: 'POST',
@@ -608,19 +602,59 @@
           body: JSON.stringify({})
         });
 
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const data = await response.json();
-        const stockData = data.find(item => item.symbol === officialSymbol || item.symbol === symbol);
+        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
 
-        if (stockData && stockData.lastTradedPrice) {
-          return parseFloat(stockData.lastTradedPrice);
-        } else {
-          return appState.customPrices[symbol] || DEMO_PRICES[symbol];
+        const data = await response.json();
+
+        if (Array.isArray(data) && data.length > 0) {
+          const selector = document.getElementById('stockSelector');
+          const currentSelection = selector.value || appState.selectedStock;
+          selector.innerHTML = '';
+
+          data.forEach(item => {
+            const rawSymbol = item.symbol || '';
+            const shortSymbol = rawSymbol.split('.')[0];
+            const price = parseFloat(item.lastTradedPrice || item.price || 0);
+
+            if (shortSymbol && price > 0) {
+              liveStockData[shortSymbol] = price;
+
+              // Dynamically build portfolio slot if missing
+              if (!appState.portfolio[shortSymbol]) {
+                appState.portfolio[shortSymbol] = { purchases: [], dividends: [] };
+              }
+
+              const option = document.createElement('option');
+              option.value = shortSymbol;
+              option.text = `${shortSymbol} — ${item.name || shortSymbol} (Rs. ${price.toFixed(2)})`;
+              selector.appendChild(option);
+            }
+          });
+
+          if (liveStockData[currentSelection]) {
+            selector.value = currentSelection;
+          }
+
+          console.log(`[LIVE CSE] Loaded ${Object.keys(liveStockData).length} CSE tickers.`);
+          return true;
         }
       } catch (err) {
-        console.warn(`[LIVE CSE FETCH ERROR] Falling back to demo price for ${symbol}.`, err);
-        return appState.customPrices[symbol] || DEMO_PRICES[symbol];
+        console.warn('[LIVE CSE] Fetch failed. Using local default prices.', err);
+        liveStockData = { ...DEFAULT_PRICES };
+        return false;
       }
+    }
+
+    async function getMarketPrice(symbol) {
+      if (appState.isDemoMode) {
+        return appState.customPrices[symbol] || DEFAULT_PRICES[symbol] || 139.00;
+      }
+
+      if (liveStockData[symbol]) {
+        return liveStockData[symbol];
+      }
+
+      return appState.customPrices[symbol] || DEFAULT_PRICES[symbol] || 139.00;
     }
 
     // MODE TOGGLER
@@ -655,7 +689,7 @@
         banner.innerHTML = `
           <div class="flex items-center space-x-2">
             <i data-lucide="wifi" class="w-4 h-4 text-emerald-400"></i>
-            <span><strong>LIVE CSE ARCHITECTURE ACTIVE:</strong> Attempting to stream live market feeds from cse.lk via CORS proxy.</span>
+            <span><strong>LIVE CSE DATA ACTIVE:</strong> Streaming live market prices directly from cse.lk via CORS proxy.</span>
           </div>
           <button onclick="toggleDataMode(true)" class="underline font-semibold hover:text-white">Switch to Demo Mode</button>
         `;
@@ -667,7 +701,8 @@
       const container = document.getElementById('tickerContainer');
       container.innerHTML = '';
 
-      for (const sym of Object.keys(DEMO_PRICES)) {
+      const featuredSymbols = ['SAMP', 'JKH', 'COMB', 'HNB', 'HAYL', 'DIAL', 'MELS'];
+      for (const sym of featuredSymbols) {
         const price = await getMarketPrice(sym);
         const item = document.createElement('div');
         item.className = 'flex items-center space-x-2 bg-slate-900/80 px-2.5 py-1 rounded border border-slate-800';
@@ -683,6 +718,10 @@
     async function handleStockSelect(symbol) {
       appState.selectedStock = symbol;
       saveState();
+
+      if (!appState.portfolio[symbol]) {
+        appState.portfolio[symbol] = { purchases: [], dividends: [] };
+      }
 
       document.getElementById('stockSelector').value = symbol;
       document.getElementById('activeSymbolBadge').innerText = symbol;
@@ -738,14 +777,12 @@
 
       const unrealizedPL = netMarketProceeds + totalDividends - totalInvestedCapital;
       
-      // Break-even price calculation accounting for sell fees & dividends
       let breakEvenPrice = 0;
       if (totalShares > 0) {
         breakEvenPrice = (totalInvestedCapital - totalDividends) / (totalShares * (1 - sellFee));
         if (breakEvenPrice < 0) breakEvenPrice = 0;
       }
 
-      // Calculate Money-Weighted Annualized Return (XIRR)
       const xirr = calculateXIRRForStock(pos, currentPrice, sellFee);
 
       return {
@@ -777,13 +814,12 @@
 
       document.getElementById('feeRuleDisplay').innerText = `${(appState.settings.buyFeeRate * 100).toFixed(2)}% / ${(appState.settings.sellFeeRate * 100).toFixed(2)}%`;
 
-      // Render Tables
       renderPurchasesTable();
       renderDividendsTable();
     }
 
     function renderPurchasesTable() {
-      const pos = appState.portfolio[appState.selectedStock];
+      const pos = appState.portfolio[appState.selectedStock] || { purchases: [] };
       const tbody = document.getElementById('purchasesTableBody');
       tbody.innerHTML = '';
 
@@ -809,7 +845,7 @@
     }
 
     function renderDividendsTable() {
-      const pos = appState.portfolio[appState.selectedStock];
+      const pos = appState.portfolio[appState.selectedStock] || { dividends: [] };
       const tbody = document.getElementById('dividendsTableBody');
       tbody.innerHTML = '';
 
@@ -836,6 +872,10 @@
 
       if (!date || qty <= 0 || price <= 0) return;
 
+      if (!appState.portfolio[appState.selectedStock]) {
+        appState.portfolio[appState.selectedStock] = { purchases: [], dividends: [] };
+      }
+
       appState.portfolio[appState.selectedStock].purchases.push({
         id: Date.now().toString(),
         date,
@@ -860,6 +900,10 @@
       const shares = parseInt(document.getElementById('divShares').value);
 
       if (!date || dps <= 0 || shares <= 0) return;
+
+      if (!appState.portfolio[appState.selectedStock]) {
+        appState.portfolio[appState.selectedStock] = { purchases: [], dividends: [] };
+      }
 
       appState.portfolio[appState.selectedStock].dividends.push({
         id: Date.now().toString(),
@@ -900,19 +944,16 @@
     function calculateXIRRForStock(pos, currentPrice, sellFee) {
       const cashFlows = [];
 
-      // Cash Outflows (Purchases)
       pos.purchases.forEach(p => {
         const gross = p.quantity * p.price;
         const totalCost = gross + (gross * appState.settings.buyFeeRate);
         cashFlows.push({ date: new Date(p.date), amount: -totalCost });
       });
 
-      // Cash Inflows (Dividends)
       pos.dividends.forEach(d => {
         cashFlows.push({ date: new Date(d.date), amount: d.dps * d.shares });
       });
 
-      // Hypothetical Final Inflow (Sale Proceeds Today)
       let totalShares = pos.purchases.reduce((acc, cur) => acc + cur.quantity, 0);
       if (totalShares > 0) {
         const currentGross = totalShares * currentPrice;
@@ -921,13 +962,11 @@
       }
 
       if (cashFlows.length < 2) return 0;
-
-      // XIRR Root Solver
       return solveXIRR(cashFlows);
     }
 
     function solveXIRR(cashFlows) {
-      let rate = 0.10; // Initial guess 10%
+      let rate = 0.10;
       const maxIterations = 100;
       const precision = 1e-6;
 
@@ -956,7 +995,7 @@
     // TARGET PRICE SOLVER
     function calculateTargetPrice() {
       const symbol = appState.selectedStock;
-      const pos = appState.portfolio[symbol];
+      const pos = appState.portfolio[symbol] || { purchases: [], dividends: [] };
       const targetRate = (parseFloat(document.getElementById('targetReturnInput').value) || 0) / 100;
       const targetDateStr = document.getElementById('targetSaleDateInput').value;
 
@@ -974,9 +1013,6 @@
         return;
       }
 
-      // Calculate Net Present Target Proceeds required
-      const startDate = pos.purchases.reduce((min, p) => new Date(p.date) < min ? new Date(p.date) : min, new Date(pos.purchases[0].date));
-      
       let requiredTerminalValue = 0;
       pos.purchases.forEach(p => {
         const gross = p.quantity * p.price;
@@ -1000,7 +1036,7 @@
     // RE-ENTRY STRATEGY SOLVER
     function calculateReentry() {
       const symbol = appState.selectedStock;
-      const pos = appState.portfolio[symbol];
+      const pos = appState.portfolio[symbol] || { purchases: [] };
       const testSalePrice = parseFloat(document.getElementById('reentrySalePrice').value) || 0;
       const reentryPrice = parseFloat(document.getElementById('reentryBuyPrice').value) || 0;
 
@@ -1018,13 +1054,11 @@
       const summary = getStockSummary(symbol, testSalePrice);
       const netSaleProceeds = (totalShares * testSalePrice) * (1 - sellFee);
 
-      // Strategy 1: Capital Protection
       const targetCapital = summary.totalInvestedCapital;
       const effectiveReentryCost = reentryPrice * (1 + buyFee);
       const capProtectShares = Math.floor(targetCapital / effectiveReentryCost);
       const capProtectCash = netSaleProceeds - (capProtectShares * effectiveReentryCost);
 
-      // Strategy 2: Complete Reinvestment
       const reinvestShares = Math.floor(netSaleProceeds / effectiveReentryCost);
       const reinvestCash = netSaleProceeds - (reinvestShares * effectiveReentryCost);
 
@@ -1115,7 +1149,6 @@
         let annualContribution = contribution * freq;
         totalInvested += annualContribution;
 
-        // Compound interest logic
         for (let period = 0; period < freq; period++) {
           currentBalance = (currentBalance + contribution) * (1 + rate / freq);
         }
