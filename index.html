@@ -1,1453 +1,1282 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSE WEALTH LAB — Future Wealth Planner & Portfolio Simulator</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        bgDark: '#0b0f19',
-                        cardDark: '#131b2e',
-                        borderDark: '#1e293b',
-                        cyanAccent: '#06b6d4',
-                        blueAccent: '#3b82f6',
-                        goldAccent: '#f59e0b',
-                    }
-                }
-            }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSE WEALTH LAB — Future Wealth Planner & Portfolio Simulator</title>
+  
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            bgDark: '#0b0f19',
+            cardDark: '#131b2e',
+            accentCyan: '#06b6d4',
+            accentBlue: '#3b82f6',
+            accentGold: '#f59e0b',
+          }
         }
-    </script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Chart.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body {
-            background-color: #0b0f19;
-            color: #f8fafc;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        }
-        /* Custom scrollbar for terminal aesthetic */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0b0f19;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #1e293b;
-            border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #06b6d4;
-        }
-        .tab-btn.active {
-            border-bottom: 2px solid #06b6d4;
-            color: #06b6d4;
-            background-color: rgba(6, 182, 212, 0.05);
-        }
-    </style>
+      }
+    }
+  </script>
+  
+  <!-- Chart.js via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Lucide Icons via CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="min-h-screen flex flex-col bg-bgDark text-slate-100 antialiased selection:bg-cyanAccent selection:text-bgDark">
+<body class="bg-[#0b0f19] text-gray-100 font-sans min-h-screen flex flex-col antialiased selection:bg-cyan-500 selection:text-white">
 
-    <!-- TOP HEADER & BRANDING -->
-    <header class="border-b border-borderDark bg-cardDark/80 backdrop-blur sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
-            <div class="flex items-center space-x-3">
-                <div class="bg-gradient-to-tr from-cyanAccent to-blueAccent p-2.5 rounded-xl shadow-lg shadow-cyanAccent/10">
-                    <i data-lucide="trending-up" class="w-6 h-6 text-bgDark stroke-[2.5]"></i>
-                </div>
-                <div>
-                    <h1 class="text-xl font-extrabold tracking-wider bg-gradient-to-r from-cyanAccent via-blue-400 to-goldAccent bg-clip-text text-transparent">
-                        CSE WEALTH LAB
-                    </h1>
-                    <p class="text-xs text-slate-400 font-medium">Future Wealth Planner & Portfolio Simulator</p>
-                </div>
-            </div>
-
-            <div class="flex items-center space-x-3">
-                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-goldAccent border border-goldAccent/20">
-                    <span class="w-2 h-2 rounded-full bg-goldAccent mr-1.5 animate-pulse"></span>
-                    DEMO MARKET DATA
-                </span>
-                <button onclick="openSettingsModal()" class="p-2 rounded-lg bg-borderDark/60 hover:bg-borderDark text-slate-300 hover:text-cyanAccent transition border border-slate-800" title="Settings">
-                    <i data-lucide="settings" class="w-5 h-5"></i>
-                </button>
-                <button onclick="exportData()" class="p-2 rounded-lg bg-borderDark/60 hover:bg-borderDark text-slate-300 hover:text-cyanAccent transition border border-slate-800" title="Export Backup JSON">
-                    <i data-lucide="download" class="w-5 h-5"></i>
-                </button>
-                <label class="p-2 rounded-lg bg-borderDark/60 hover:bg-borderDark text-slate-300 hover:text-cyanAccent transition border border-slate-800 cursor-pointer" title="Import JSON">
-                    <i data-lucide="upload" class="w-5 h-5"></i>
-                    <input type="file" id="importFileInput" onchange="importData(event)" class="hidden" accept=".json">
-                </label>
-                <button onclick="confirmReset()" class="p-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 transition border border-red-500/20" title="Reset All Data">
-                    <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
-                </button>
-            </div>
+  <!-- TOP TICKER BAR -->
+  <header class="border-b border-slate-800 bg-[#131b2e]/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center space-x-3">
+        <div class="p-2 bg-gradient-to-tr from-cyan-500 to-blue-600 rounded-lg shadow-lg shadow-cyan-500/20">
+          <i data-lucide="trending-up" class="w-6 h-6 text-white"></i>
         </div>
-    </header>
-
-    <!-- MODULE A: LIVE/DEMO MARKET DASHBOARD TICKER -->
-    <section class="bg-bgDark border-b border-borderDark py-2.5 overflow-x-auto shadow-inner">
-        <div id="marketTicker" class="max-w-7xl mx-auto px-4 flex items-center space-x-6 text-sm font-mono whitespace-nowrap min-w-max">
-            <!-- Dynamic ticker items generated here -->
+        <div>
+          <h1 class="text-xl font-bold tracking-wider text-white flex items-center gap-2">
+            CSE WEALTH LAB
+            <span class="text-xs px-2 py-0.5 rounded-full bg-cyan-950 text-cyan-400 border border-cyan-800/50">PRO</span>
+          </h1>
+          <p class="text-xs text-slate-400">Future Wealth Planner & Portfolio Simulator</p>
         </div>
-    </section>
+      </div>
 
-    <!-- MAIN NAVIGATION TABS -->
-    <nav class="border-b border-borderDark bg-cardDark/40">
-        <div class="max-w-7xl mx-auto px-4 flex space-x-8">
-            <button onclick="switchTab('planner')" id="tab-planner" class="tab-btn active py-3.5 px-1 font-semibold text-sm flex items-center space-x-2 transition">
-                <i data-lucide="line-chart" class="w-4 h-4"></i>
-                <span>Future Wealth Planner</span>
-            </button>
-            <button onclick="switchTab('portfolio')" id="tab-portfolio" class="tab-btn py-3.5 px-1 font-semibold text-sm text-slate-400 hover:text-slate-200 flex items-center space-x-2 transition">
-                <i data-lucide="briefcase" class="w-4 h-4"></i>
-                <span>Actual Stock Portfolio Simulator</span>
-            </button>
-        </div>
-    </nav>
-
-    <!-- MAIN CONTENT CONTAINER -->
-    <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-6 space-y-6">
-
-        <!-- ========================================================================= -->
-        <!-- TAB 1: MODULE B - FUTURE WEALTH PLANNER                                   -->
-        <!-- ========================================================================= -->
-        <div id="view-planner" class="space-y-6">
-            <!-- Controls & Inputs -->
-            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                <!-- Inputs Card -->
-                <div class="bg-cardDark p-5 rounded-2xl border border-borderDark space-y-4 shadow-xl">
-                    <h3 class="text-base font-bold text-cyanAccent flex items-center space-x-2 border-b border-borderDark/60 pb-2">
-                        <i data-lucide="sliders" class="w-4 h-4"></i>
-                        <span>Planner Inputs</span>
-                    </h3>
-
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Initial Lump Sum (LKR)</label>
-                        <input type="number" id="planLumpSum" value="500000" step="10000" oninput="updatePlanner()" class="w-full bg-bgDark border border-borderDark rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyanAccent">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Periodic Contribution (LKR)</label>
-                        <input type="number" id="planContribution" value="25000" step="1000" oninput="updatePlanner()" class="w-full bg-bgDark border border-borderDark rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyanAccent">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Contribution Frequency</label>
-                        <select id="planFrequency" onchange="updatePlanner()" class="w-full bg-bgDark border border-borderDark rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyanAccent">
-                            <option value="12">Monthly</option>
-                            <option value="4">Quarterly</option>
-                            <option value="2">Semi-Annually</option>
-                            <option value="1">Annually</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Investment Duration (Years)</label>
-                        <input type="number" id="planDuration" value="20" min="1" max="50" oninput="updatePlanner()" class="w-full bg-bgDark border border-borderDark rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyanAccent">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Expected Annual Return (%)</label>
-                        <input type="number" id="planReturnRate" value="12" step="0.5" oninput="updatePlanner()" class="w-full bg-bgDark border border-borderDark rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyanAccent">
-                    </div>
-                </div>
-
-                <!-- KPI Overview Cards & Projection Chart -->
-                <div class="lg:col-span-3 space-y-6">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="bg-cardDark p-4 rounded-2xl border border-borderDark">
-                            <span class="text-xs font-medium text-slate-400">Total Invested Capital</span>
-                            <div id="kpiPlanInvested" class="text-xl font-bold font-mono text-slate-100 mt-1">Rs. 0.00</div>
-                            <span class="text-[10px] text-slate-500">Lump Sum + Contributions</span>
-                        </div>
-                        <div class="bg-cardDark p-4 rounded-2xl border border-borderDark">
-                            <span class="text-xs font-medium text-slate-400">Projected Growth</span>
-                            <div id="kpiPlanGrowth" class="text-xl font-bold font-mono text-emerald-400 mt-1">Rs. 0.00</div>
-                            <span class="text-[10px] text-slate-500">Compounded Returns (Non-Guaranteed)</span>
-                        </div>
-                        <div class="bg-cardDark p-4 rounded-2xl border border-borderDark">
-                            <span class="text-xs font-medium text-slate-400">Final Projected Wealth</span>
-                            <div id="kpiPlanTotal" class="text-2xl font-black font-mono text-cyanAccent mt-1">Rs. 0.00</div>
-                            <span class="text-[10px] text-slate-500">Estimated Portfolio Value</span>
-                        </div>
-                    </div>
-
-                    <!-- Projection Chart Card -->
-                    <div class="bg-cardDark p-5 rounded-2xl border border-borderDark shadow-xl">
-                        <h4 class="text-sm font-bold text-slate-300 mb-4 flex items-center space-x-2">
-                            <i data-lucide="bar-chart-2" class="w-4 h-4 text-cyanAccent"></i>
-                            <span>Wealth Accumulation Trajectory</span>
-                        </h4>
-                        <div class="h-64 w-full relative">
-                            <canvas id="plannerChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Detailed Projection Schedule Table -->
-            <div class="bg-cardDark p-5 rounded-2xl border border-borderDark space-y-4">
-                <div class="flex justify-between items-center">
-                    <h4 class="text-sm font-bold text-slate-300 flex items-center space-x-2">
-                        <i data-lucide="table" class="w-4 h-4 text-cyanAccent"></i>
-                        <span>Amortization & Growth Schedule</span>
-                    </h4>
-                    <div class="flex bg-bgDark rounded-lg p-1 border border-borderDark text-xs font-medium">
-                        <button onclick="setTableMode('yearly')" id="btnTableYearly" class="px-3 py-1 rounded-md bg-borderDark text-cyanAccent">Yearly</button>
-                        <button onclick="setTableMode('monthly')" id="btnTableMonthly" class="px-3 py-1 rounded-md text-slate-400 hover:text-white">Monthly</button>
-                    </div>
-                </div>
-
-                <div class="overflow-x-auto max-h-80">
-                    <table class="w-full text-left text-xs text-slate-300 font-mono">
-                        <thead class="bg-bgDark/80 sticky top-0 uppercase text-[10px] text-slate-400 border-b border-borderDark">
-                            <tr>
-                                <th class="py-2.5 px-3">Period</th>
-                                <th class="py-2.5 px-3">Contribution</th>
-                                <th class="py-2.5 px-3">Cumulative Invested</th>
-                                <th class="py-2.5 px-3">Accrued Growth</th>
-                                <th class="py-2.5 px-3">Portfolio Value</th>
-                            </tr>
-                        </thead>
-                        <tbody id="plannerTableBody" class="divide-y divide-borderDark/40">
-                            <!-- Dynamic Schedule Rows -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+      <!-- Controls & Status -->
+      <div class="flex items-center space-x-4">
+        <!-- Live vs Demo Toggle -->
+        <div class="flex items-center bg-slate-900 border border-slate-700/60 rounded-lg p-1 text-xs">
+          <button id="modeDemoBtn" onclick="toggleDataMode(true)" class="px-3 py-1 rounded-md transition-all font-medium">DEMO MODE</button>
+          <button id="modeLiveBtn" onclick="toggleDataMode(false)" class="px-3 py-1 rounded-md transition-all font-medium">LIVE CSE DATA</button>
         </div>
 
-        <!-- ========================================================================= -->
-        <!-- TAB 2: MODULE C - ACTUAL STOCK PORTFOLIO & ANALYSIS                       -->
-        <!-- ========================================================================= -->
-        <div id="view-portfolio" class="hidden space-y-6">
-
-            <!-- Stock Selector & Test Price Bar -->
-            <div class="bg-cardDark p-4 rounded-2xl border border-borderDark flex flex-wrap items-center justify-between gap-4 shadow-md">
-                <div class="flex items-center space-x-4">
-                    <i data-lucide="filter" class="w-5 h-5 text-cyanAccent"></i>
-                    <div>
-                        <label class="block text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Active Stock Workspace</label>
-                        <select id="selectedStockSelect" onchange="changeActiveStock(this.value)" class="bg-bgDark border border-borderDark rounded-lg px-3 py-1.5 text-sm font-bold text-cyanAccent focus:outline-none">
-                            <!-- Dynamic Options -->
-                        </select>
-                    </div>
-                </div>
-
-                <div class="flex items-center space-x-6">
-                    <div>
-                        <span class="block text-[10px] text-slate-400 uppercase tracking-wider">Demo Base Price</span>
-                        <span id="demoBasePrice" class="text-sm font-mono text-slate-300">Rs. 0.00</span>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <label class="block text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Test Market Price:</label>
-                        <input type="number" id="testMarketPriceInput" step="0.1" oninput="updateActiveStockTestPrice(this.value)" class="bg-bgDark border border-cyanAccent/40 rounded-lg px-3 py-1.5 text-sm font-bold font-mono text-goldAccent w-28 text-right focus:outline-none focus:border-cyanAccent">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Single Stock Analytics Grid -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-                <!-- Column 1 & 2: Purchases, Dividends & Position Summary -->
-                <div class="lg:col-span-2 space-y-6">
-
-                    <!-- Position Summary Card -->
-                    <div class="bg-cardDark p-5 rounded-2xl border border-borderDark space-y-4 shadow-lg">
-                        <div class="flex justify-between items-center border-b border-borderDark/60 pb-3">
-                            <h3 class="text-base font-bold text-slate-200 flex items-center space-x-2">
-                                <i data-lucide="pie-chart" class="w-5 h-5 text-cyanAccent"></i>
-                                <span>Position Summary — <span id="summaryStockSymbol" class="text-cyanAccent">JKH</span></span>
-                            </h3>
-                            <span id="positionStatusBadge" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">OPEN POSITION</span>
-                        </div>
-
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-mono">
-                            <div class="bg-bgDark/60 p-3 rounded-xl border border-borderDark/50">
-                                <span class="text-slate-400 block text-[10px]">Total Shares Held</span>
-                                <span id="posTotalShares" class="text-sm font-bold text-white mt-1 block">0</span>
-                            </div>
-                            <div class="bg-bgDark/60 p-3 rounded-xl border border-borderDark/50">
-                                <span class="text-slate-400 block text-[10px]">Total Invested Capital</span>
-                                <span id="posTotalInvested" class="text-sm font-bold text-white mt-1 block">Rs. 0.00</span>
-                                <span class="text-[9px] text-slate-500">(Incl. Buy Fees)</span>
-                            </div>
-                            <div class="bg-bgDark/60 p-3 rounded-xl border border-borderDark/50">
-                                <span class="text-slate-400 block text-[10px]">Weighted Avg Price</span>
-                                <span id="posAvgPrice" class="text-sm font-bold text-white mt-1 block">Rs. 0.00</span>
-                            </div>
-                            <div class="bg-bgDark/60 p-3 rounded-xl border border-borderDark/50">
-                                <span class="text-slate-400 block text-[10px]">Current Market Value</span>
-                                <span id="posMarketValue" class="text-sm font-bold text-cyanAccent mt-1 block">Rs. 0.00</span>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-mono pt-2">
-                            <div class="bg-bgDark/60 p-3 rounded-xl border border-borderDark/50">
-                                <span class="text-slate-400 block text-[10px]">Total Dividends Recd</span>
-                                <span id="posTotalDividends" class="text-sm font-bold text-emerald-400 mt-1 block">Rs. 0.00</span>
-                            </div>
-                            <div class="bg-bgDark/60 p-3 rounded-xl border border-borderDark/50">
-                                <span class="text-slate-400 block text-[10px]">Unrealized Profit/Loss</span>
-                                <span id="posUnrealizedPL" class="text-sm font-bold mt-1 block">Rs. 0.00</span>
-                            </div>
-                            <div class="bg-bgDark/60 p-3 rounded-xl border border-borderDark/50">
-                                <span class="text-slate-400 block text-[10px]">Total Economic Return</span>
-                                <span id="posTotalReturnPct" class="text-sm font-bold mt-1 block">0.00%</span>
-                            </div>
-                            <div class="bg-bgDark/60 p-3 rounded-xl border border-borderDark/50">
-                                <span class="text-slate-400 block text-[10px]">Annualized Return (XIRR)</span>
-                                <span id="posAnnualizedReturnXIRR" class="text-sm font-bold text-goldAccent mt-1 block">0.00%</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Purchase Logger Component -->
-                    <div class="bg-cardDark p-5 rounded-2xl border border-borderDark space-y-4">
-                        <h4 class="text-sm font-bold text-slate-200 flex items-center space-x-2 border-b border-borderDark/60 pb-2">
-                            <i data-lucide="plus-circle" class="w-4 h-4 text-cyanAccent"></i>
-                            <span>Purchase Transaction Logger</span>
-                        </h4>
-
-                        <!-- Add Form -->
-                        <form onsubmit="handleAddPurchase(event)" class="grid grid-cols-1 sm:grid-cols-4 gap-3">
-                            <div>
-                                <label class="block text-[10px] text-slate-400 mb-1">Date</label>
-                                <input type="date" id="buyDateInput" required class="w-full bg-bgDark border border-borderDark rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-cyanAccent">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] text-slate-400 mb-1">Quantity</label>
-                                <input type="number" id="buyQtyInput" min="1" required class="w-full bg-bgDark border border-borderDark rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-cyanAccent">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] text-slate-400 mb-1">Price / Share (LKR)</label>
-                                <input type="number" id="buyPriceInput" step="0.01" min="0.01" required class="w-full bg-bgDark border border-borderDark rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-cyanAccent">
-                            </div>
-                            <div class="flex items-end">
-                                <button type="submit" class="w-full bg-cyanAccent hover:bg-cyan-400 text-bgDark font-bold py-1.5 px-3 rounded-lg text-xs transition flex items-center justify-center space-x-1">
-                                    <i data-lucide="check" class="w-3.5 h-3.5"></i>
-                                    <span>Log Purchase</span>
-                                </button>
-                            </div>
-                        </form>
-
-                        <!-- Logged Purchases Table -->
-                        <div class="overflow-x-auto max-h-48 pt-2">
-                            <table class="w-full text-left text-xs font-mono">
-                                <thead class="bg-bgDark uppercase text-[9px] text-slate-400 border-b border-borderDark">
-                                    <tr>
-                                        <th class="py-2 px-3">Date</th>
-                                        <th class="py-2 px-3">Shares</th>
-                                        <th class="py-2 px-3">Price</th>
-                                        <th class="py-2 px-3">Gross Cost</th>
-                                        <th class="py-2 px-3">Buy Fee</th>
-                                        <th class="py-2 px-3">Total Cost</th>
-                                        <th class="py-2 px-3 text-right">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="purchaseTableBody" class="divide-y divide-borderDark/40">
-                                    <!-- Dynamic purchase lots -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- Collapsible Dividend Logger Component -->
-                    <div class="bg-cardDark p-5 rounded-2xl border border-borderDark space-y-4">
-                        <div class="flex justify-between items-center cursor-pointer" onclick="toggleDividendCollapse()">
-                            <h4 class="text-sm font-bold text-slate-200 flex items-center space-x-2">
-                                <i data-lucide="coins" class="w-4 h-4 text-emerald-400"></i>
-                                <span>Dividend Transaction Logger</span>
-                            </h4>
-                            <i id="divCollapseIcon" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform"></i>
-                        </div>
-
-                        <div id="dividendSectionBody" class="space-y-4">
-                            <form onsubmit="handleAddDividend(event)" class="grid grid-cols-1 sm:grid-cols-4 gap-3">
-                                <div>
-                                    <label class="block text-[10px] text-slate-400 mb-1">Date</label>
-                                    <input type="date" id="divDateInput" required class="w-full bg-bgDark border border-borderDark rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-cyanAccent">
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] text-slate-400 mb-1">DPS (LKR)</label>
-                                    <input type="number" id="divDPSInput" step="0.01" min="0.01" required class="w-full bg-bgDark border border-borderDark rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-cyanAccent">
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] text-slate-400 mb-1">Eligible Shares</label>
-                                    <input type="number" id="divSharesInput" min="1" required class="w-full bg-bgDark border border-borderDark rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-cyanAccent">
-                                </div>
-                                <div class="flex items-end">
-                                    <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-400 text-bgDark font-bold py-1.5 px-3 rounded-lg text-xs transition flex items-center justify-center space-x-1">
-                                        <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-                                        <span>Log Dividend</span>
-                                    </button>
-                                </div>
-                            </form>
-
-                            <div class="overflow-x-auto max-h-36">
-                                <table class="w-full text-left text-xs font-mono">
-                                    <thead class="bg-bgDark uppercase text-[9px] text-slate-400 border-b border-borderDark">
-                                        <tr>
-                                            <th class="py-2 px-3">Date</th>
-                                            <th class="py-2 px-3">DPS</th>
-                                            <th class="py-2 px-3">Eligible Shares</th>
-                                            <th class="py-2 px-3">Gross Dividend Received</th>
-                                            <th class="py-2 px-3 text-right">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="dividendTableBody" class="divide-y divide-borderDark/40">
-                                        <!-- Dynamic dividend entries -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- Column 3: Quantitative Simulators (Sell, Break-even, Target Price, Re-entry) -->
-                <div class="space-y-6">
-
-                    <!-- Sell Simulator & Break-Even Card -->
-                    <div class="bg-cardDark p-5 rounded-2xl border border-borderDark space-y-4 shadow-lg">
-                        <h4 class="text-sm font-bold text-goldAccent flex items-center space-x-2 border-b border-borderDark/60 pb-2">
-                            <i data-lucide="calculator" class="w-4 h-4"></i>
-                            <span>Exit & Break-Even Simulator</span>
-                        </h4>
-
-                        <div class="bg-bgDark/80 p-3 rounded-xl border border-borderDark space-y-2">
-                            <div class="flex justify-between items-center text-xs">
-                                <span class="text-slate-400">Break-Even Sale Price:</span>
-                                <span id="simBreakEvenPrice" class="font-bold font-mono text-cyanAccent">Rs. 0.00</span>
-                            </div>
-                            <p class="text-[10px] text-slate-500">Includes buy fees, sell fee, minus dividends received.</p>
-                        </div>
-
-                        <div class="space-y-3 font-mono text-xs">
-                            <div class="flex justify-between items-center">
-                                <span class="text-slate-400">Gross Sale Value:</span>
-                                <span id="simGrossSaleValue" class="text-slate-200">Rs. 0.00</span>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-slate-400">Sell Transaction Cost (<span class="simSellFeeRate">1.12%</span>):</span>
-                                <span id="simSellFee" class="text-red-400">Rs. 0.00</span>
-                            </div>
-                            <div class="flex justify-between items-center border-t border-borderDark/60 pt-2 font-bold">
-                                <span class="text-slate-300">Net Sale Proceeds:</span>
-                                <span id="simNetProceeds" class="text-white">Rs. 0.00</span>
-                            </div>
-                            <div class="flex justify-between items-center border-t border-borderDark/60 pt-2 font-black text-sm">
-                                <span class="text-slate-300">Net Profit / Loss:</span>
-                                <span id="simNetProfitLoss" class="text-emerald-400">Rs. 0.00</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Target Price Solver Card -->
-                    <div class="bg-cardDark p-5 rounded-2xl border border-borderDark space-y-4 shadow-lg">
-                        <h4 class="text-sm font-bold text-cyanAccent flex items-center space-x-2 border-b border-borderDark/60 pb-2">
-                            <i data-lucide="target" class="w-4 h-4"></i>
-                            <span>Target Sale Price Solver</span>
-                        </h4>
-
-                        <div class="space-y-3">
-                            <div>
-                                <label class="block text-[10px] text-slate-400 mb-1">Desired Annualized Return (%)</label>
-                                <input type="number" id="targetReturnInput" value="15" step="0.5" oninput="calculateTargetPrice()" class="w-full bg-bgDark border border-borderDark rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyanAccent font-mono">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] text-slate-400 mb-1">Expected Exit / Sale Date</label>
-                                <input type="date" id="targetDateInput" onchange="calculateTargetPrice()" class="w-full bg-bgDark border border-borderDark rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyanAccent font-mono">
-                            </div>
-
-                            <div class="bg-bgDark p-3 rounded-xl border border-cyanAccent/20 text-center space-y-1">
-                                <span class="text-[10px] text-slate-400 uppercase tracking-wider block">Required Target Sale Price</span>
-                                <div id="targetRequiredPrice" class="text-xl font-extrabold font-mono text-cyanAccent">Rs. 0.00</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Re-Entry Strategy Module -->
-                    <div class="bg-cardDark p-5 rounded-2xl border border-borderDark space-y-4 shadow-lg">
-                        <h4 class="text-sm font-bold text-purple-400 flex items-center space-x-2 border-b border-borderDark/60 pb-2">
-                            <i data-lucide="repeat" class="w-4 h-4"></i>
-                            <span>Re-Entry Strategy Calculator</span>
-                        </h4>
-
-                        <div class="grid grid-cols-2 gap-2 text-xs">
-                            <div>
-                                <label class="block text-[10px] text-slate-400 mb-1">Simulated Exit Price</label>
-                                <input type="number" id="reentrySalePriceInput" step="0.1" oninput="updateReentryCalculations()" class="w-full bg-bgDark border border-borderDark rounded-lg px-2.5 py-1.5 font-mono text-white">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] text-slate-400 mb-1">Target Re-entry Price</label>
-                                <input type="number" id="reentryBuyPriceInput" step="0.1" oninput="updateReentryCalculations()" class="w-full bg-bgDark border border-borderDark rounded-lg px-2.5 py-1.5 font-mono text-white">
-                            </div>
-                        </div>
-
-                        <!-- Strategy Tabs / Results -->
-                        <div class="space-y-3 font-mono text-xs pt-1">
-                            <div class="bg-bgDark/60 p-2.5 rounded-xl border border-borderDark">
-                                <div class="font-bold text-slate-300 text-[11px] mb-1">Strat 1: Capital Protection</div>
-                                <div class="flex justify-between text-slate-400"><span>Max Repurchase Shares:</span><span id="reentryStrat1Shares" class="text-white font-bold">0</span></div>
-                                <div class="flex justify-between text-slate-400"><span>Remaining Cash:</span><span id="reentryStrat1Cash" class="text-emerald-400">Rs. 0.00</span></div>
-                            </div>
-
-                            <div class="bg-bgDark/60 p-2.5 rounded-xl border border-borderDark">
-                                <div class="font-bold text-slate-300 text-[11px] mb-1">Strat 2: Complete Reinvestment</div>
-                                <div class="flex justify-between text-slate-400"><span>Max Repurchase Shares:</span><span id="reentryStrat2Shares" class="text-white font-bold">0</span></div>
-                                <div class="flex justify-between text-slate-400"><span>Remaining Cash:</span><span id="reentryStrat2Cash" class="text-emerald-400">Rs. 0.00</span></div>
-                            </div>
-
-                            <div class="bg-bgDark/60 p-2.5 rounded-xl border border-borderDark">
-                                <div class="font-bold text-slate-300 text-[11px] mb-1">Strat 3: Lock-In Realized Profit</div>
-                                <div class="flex justify-between text-slate-400"><span>Retained Profit Cash:</span><span id="reentryStrat3ProfitCash" class="text-emerald-400 font-bold">Rs. 0.00</span></div>
-                                <div class="flex justify-between text-slate-400"><span>Re-entry Quantity:</span><span id="reentryStrat3Shares" class="text-white">0</span></div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- What-If Scenario Matrix -->
-            <div class="bg-cardDark p-5 rounded-2xl border border-borderDark space-y-4">
-                <h4 class="text-sm font-bold text-slate-200 flex items-center space-x-2">
-                    <i data-lucide="layers" class="w-4 h-4 text-goldAccent"></i>
-                    <span>What-If Price Sensitivity Matrix</span>
-                </h4>
-
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs font-mono">
-                        <thead class="bg-bgDark uppercase text-[9px] text-slate-400 border-b border-borderDark">
-                            <tr>
-                                <th class="py-2.5 px-3">Test Exit Price</th>
-                                <th class="py-2.5 px-3">Gross Proceeds</th>
-                                <th class="py-2.5 px-3">Net Proceeds (After Fees)</th>
-                                <th class="py-2.5 px-3">Net Profit / Loss</th>
-                                <th class="py-2.5 px-3">Total Return %</th>
-                            </tr>
-                        </thead>
-                        <tbody id="scenarioMatrixBody" class="divide-y divide-borderDark/40">
-                            <!-- Dynamic rows -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- PORTFOLIO-LEVEL AGGREGATED DASHBOARD -->
-            <div class="bg-cardDark p-5 rounded-2xl border border-borderDark space-y-5">
-                <div class="flex justify-between items-center border-b border-borderDark/60 pb-3">
-                    <h3 class="text-base font-bold text-slate-200 flex items-center space-x-2">
-                        <i data-lucide="layout-grid" class="w-5 h-5 text-cyanAccent"></i>
-                        <span>Aggregated Portfolio Overview</span>
-                    </h3>
-                </div>
-
-                <!-- Aggregated KPIs -->
-                <div class="grid grid-cols-2 md:grid-cols-5 gap-4 font-mono">
-                    <div class="bg-bgDark p-3 rounded-xl border border-borderDark">
-                        <span class="text-[10px] text-slate-400">Total Capital Invested</span>
-                        <div id="portAggInvested" class="text-sm font-bold text-white mt-1">Rs. 0.00</div>
-                    </div>
-                    <div class="bg-bgDark p-3 rounded-xl border border-borderDark">
-                        <span class="text-[10px] text-slate-400">Total Market Value</span>
-                        <div id="portAggMarketValue" class="text-sm font-bold text-cyanAccent mt-1">Rs. 0.00</div>
-                    </div>
-                    <div class="bg-bgDark p-3 rounded-xl border border-borderDark">
-                        <span class="text-[10px] text-slate-400">Total Dividends</span>
-                        <div id="portAggDividends" class="text-sm font-bold text-emerald-400 mt-1">Rs. 0.00</div>
-                    </div>
-                    <div class="bg-bgDark p-3 rounded-xl border border-borderDark">
-                        <span class="text-[10px] text-slate-400">Unrealized P/L</span>
-                        <div id="portAggUnrealizedPL" class="text-sm font-bold mt-1">Rs. 0.00</div>
-                    </div>
-                    <div class="bg-bgDark p-3 rounded-xl border border-borderDark">
-                        <span class="text-[10px] text-slate-400">Portfolio Return</span>
-                        <div id="portAggReturnPct" class="text-sm font-bold mt-1">0.00%</div>
-                    </div>
-                </div>
-
-                <!-- Portfolio Breakdown Table -->
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs font-mono">
-                        <thead class="bg-bgDark uppercase text-[9px] text-slate-400 border-b border-borderDark">
-                            <tr>
-                                <th class="py-2.5 px-3">Symbol</th>
-                                <th class="py-2.5 px-3">Shares</th>
-                                <th class="py-2.5 px-3">Avg Price</th>
-                                <th class="py-2.5 px-3">Invested</th>
-                                <th class="py-2.5 px-3">Market Value</th>
-                                <th class="py-2.5 px-3">Dividends</th>
-                                <th class="py-2.5 px-3">Unrealized P/L</th>
-                                <th class="py-2.5 px-3">Return %</th>
-                                <th class="py-2.5 px-3">Allocation</th>
-                            </tr>
-                        </thead>
-                        <tbody id="portfolioOverviewTableBody" class="divide-y divide-borderDark/40">
-                            <!-- Dynamic portfolio rows -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- TRANSPARENCY & CALCULATION AUDIT COLLAPSIBLE -->
-            <div class="bg-cardDark p-4 rounded-2xl border border-borderDark">
-                <details class="group">
-                    <summary class="flex justify-between items-center cursor-pointer text-xs font-bold text-slate-400 hover:text-slate-200">
-                        <span class="flex items-center space-x-2">
-                            <i data-lucide="help-circle" class="w-4 h-4 text-cyanAccent"></i>
-                            <span>Financial Calculation Transparency & Methodology</span>
-                        </span>
-                        <i data-lucide="chevron-down" class="w-4 h-4 group-open:rotate-180 transition-transform"></i>
-                    </summary>
-                    <div class="mt-3 text-xs text-slate-400 space-y-2 leading-relaxed border-t border-borderDark/60 pt-3 font-mono">
-                        <p><strong class="text-slate-200">Net Profit / Loss Formula:</strong> <code class="text-cyanAccent">(Net Sale Proceeds + Received Dividends) - Total Invested Capital</code></p>
-                        <p><strong class="text-slate-200">Buy Fee Calculation:</strong> <code class="text-cyanAccent">Gross Purchase Price × settings.buyFeeRate (1.12%)</code></p>
-                        <p><strong class="text-slate-200">Annualized Return (XIRR):</strong> Solved using Newton-Raphson root finding over individual dated cash flows: <code class="text-cyanAccent">Σ [ CF_i / (1 + r)^((t_i - t_0)/365) ] = 0</code>.</p>
-                        <p><strong class="text-slate-200">Break-Even Price:</strong> The exact market price needed such that: <code class="text-cyanAccent">(BreakEvenPrice × Shares) × (1 - SellFeeRate) + Dividends = Total Invested Capital</code>.</p>
-                    </div>
-                </details>
-            </div>
-
-        </div>
-
-    </main>
-
-    <!-- EDUCATIONAL DISCLAIMER FOOTER -->
-    <footer class="border-t border-borderDark bg-cardDark/80 py-4 px-4 text-center text-xs text-slate-500">
-        <p class="max-w-4xl mx-auto">
-            <strong>Educational Disclaimer:</strong> CSE WEALTH LAB is an educational planning and simulation tool. Calculations are estimates based on user-provided assumptions and transaction data and should not be considered formal financial advice. Market prices, fees, taxes, dividends, and investment returns may vary.
-        </p>
-    </footer>
-
-    <!-- SETTINGS MODAL -->
-    <div id="settingsModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
-        <div class="bg-cardDark border border-borderDark rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
-            <div class="flex justify-between items-center border-b border-borderDark/60 pb-3">
-                <h3 class="text-base font-bold text-slate-200 flex items-center space-x-2">
-                    <i data-lucide="settings" class="w-5 h-5 text-cyanAccent"></i>
-                    <span>Global Financial Settings</span>
-                </h3>
-                <button onclick="closeSettingsModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
-            </div>
-
-            <div class="space-y-3">
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Buy Transaction Fee Rate (%)</label>
-                    <input type="number" id="settingBuyFee" step="0.01" class="w-full bg-bgDark border border-borderDark rounded-lg px-3 py-2 text-sm text-white font-mono focus:outline-none focus:border-cyanAccent">
-                </div>
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Sell Transaction Fee Rate (%)</label>
-                    <input type="number" id="settingSellFee" step="0.01" class="w-full bg-bgDark border border-borderDark rounded-lg px-3 py-2 text-sm text-white font-mono focus:outline-none focus:border-cyanAccent">
-                </div>
-            </div>
-
-            <div class="flex justify-end space-x-3 pt-2">
-                <button onclick="closeSettingsModal()" class="px-4 py-2 rounded-lg bg-bgDark border border-borderDark text-xs text-slate-300 hover:bg-borderDark">Cancel</button>
-                <button onclick="saveSettings()" class="px-4 py-2 rounded-lg bg-cyanAccent text-bgDark font-bold text-xs hover:bg-cyan-400">Save Changes</button>
-            </div>
-        </div>
+        <button onclick="toggleSettingsModal()" class="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 transition" title="Global Settings">
+          <i data-lucide="settings" class="w-5 h-5"></i>
+        </button>
+      </div>
     </div>
 
-    <!-- MAIN JAVASCRIPT APPLICATION ARCHITECTURE -->
-    <script>
-        // =========================================================================
-        // INITIAL APPLICATION STATE & DEMO DATA
-        // =========================================================================
-        const DEFAULT_SETTINGS = {
-            buyFeeRate: 0.0112, // 1.12%
-            sellFeeRate: 0.0112 // 1.12%
-        };
+    <!-- Ticker Scroll -->
+    <div class="border-t border-slate-800/60 bg-slate-950/60 overflow-x-auto whitespace-nowrap scrollbar-none py-2 px-4">
+      <div id="tickerContainer" class="flex items-center space-x-6 text-xs min-w-max">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+  </header>
 
-        const DEMO_MARKET_DATA = [
-            { symbol: 'JKH', name: 'John Keells Holdings', price: 25.10, change: -0.10, changePct: -0.40 },
-            { symbol: 'SAMP', name: 'Sampath Bank', price: 82.40, change: 1.02, changePct: 1.25 },
-            { symbol: 'COMB', name: 'Commercial Bank', price: 104.50, change: 0.88, changePct: 0.85 },
-            { symbol: 'HNB', name: 'Hatton National Bank', price: 285.00, change: 5.85, changePct: 2.10 },
-            { symbol: 'HAYL', name: 'Hayleys PLC', price: 98.20, change: -0.30, changePct: -0.30 },
-            { symbol: 'DIAL', name: 'Dialog Axiata', price: 12.40, change: 0.20, changePct: 1.60 },
-            { symbol: 'MELS', name: 'Melstacorp PLC', price: 75.80, change: -0.15, changePct: -0.20 }
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-7xl mx-auto w-full px-4 py-6 flex-1 space-y-8">
+
+    <!-- DATA MODE WARNING BANNER -->
+    <div id="dataModeBanner" class="p-3 rounded-lg border text-xs flex items-center justify-between">
+      <!-- Injected via JS -->
+    </div>
+
+    <!-- GLOBAL SELECTOR & SUMMARY -->
+    <section class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div class="bg-[#131b2e] border border-slate-800 rounded-xl p-4 shadow-xl">
+        <label class="text-xs text-slate-400 font-medium block mb-1">Select Active Stock</label>
+        <select id="stockSelector" onchange="handleStockSelect(this.value)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-cyan-400 font-bold focus:ring-2 focus:ring-cyan-500 outline-none">
+          <option value="SAMP">SAMP — Sampath Bank PLC</option>
+          <option value="JKH">JKH — John Keells Holdings PLC</option>
+          <option value="COMB">COMB — Commercial Bank of Ceylon PLC</option>
+          <option value="HNB">HNB — Hatton National Bank PLC</option>
+          <option value="HAYL">HAYL — Hayleys PLC</option>
+          <option value="DIAL">DIAL — Dialog Axiata PLC</option>
+          <option value="MELS">MELS — Melstacorp PLC</option>
+        </select>
+      </div>
+
+      <div class="bg-[#131b2e] border border-slate-800 rounded-xl p-4 shadow-xl">
+        <div class="text-xs text-slate-400 font-medium mb-1">Market / Simulation Price</div>
+        <div class="flex items-center space-x-2">
+          <span class="text-xs text-slate-500">Rs.</span>
+          <input type="number" step="0.10" id="selectedStockPrice" onchange="updateCustomPrice(this.value)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-base font-semibold text-white focus:ring-2 focus:ring-cyan-500 outline-none" />
+        </div>
+      </div>
+
+      <div class="bg-[#131b2e] border border-slate-800 rounded-xl p-4 shadow-xl">
+        <div class="text-xs text-slate-400 font-medium mb-1">Portfolio Market Value</div>
+        <div id="totalPortfolioValue" class="text-xl font-bold text-white">Rs. 0.00</div>
+        <div id="totalPortfolioReturn" class="text-xs mt-1 text-slate-400">P/L: Rs. 0.00 (0.00%)</div>
+      </div>
+
+      <div class="bg-[#131b2e] border border-slate-800 rounded-xl p-4 shadow-xl">
+        <div class="text-xs text-slate-400 font-medium mb-1">Total Dividends Earned</div>
+        <div id="totalPortfolioDividends" class="text-xl font-bold text-emerald-400">Rs. 0.00</div>
+        <div id="overallXirrDisplay" class="text-xs mt-1 text-cyan-400">Overall XIRR: N/A</div>
+      </div>
+    </section>
+
+    <!-- NAVIGATION TABS -->
+    <div class="border-b border-slate-800 flex space-x-6 text-sm font-medium">
+      <button id="tabPortfolioBtn" onclick="switchTab('portfolio')" class="pb-3 border-b-2 border-cyan-500 text-cyan-400 font-semibold flex items-center gap-2">
+        <i data-lucide="briefcase" class="w-4 h-4"></i> Actual Portfolio
+      </button>
+      <button id="tabPlannerBtn" onclick="switchTab('planner')" class="pb-3 border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2">
+        <i data-lucide="calculator" class="w-4 h-4"></i> Future Wealth Planner
+      </button>
+    </div>
+
+    <!-- MODULE C — ACTUAL STOCK PORTFOLIO -->
+    <div id="tabPortfolio" class="space-y-6">
+      
+      <!-- POSITION SUMMARY & SELL SIMULATION HEADER -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Active Stock Summary Card -->
+        <div class="bg-[#131b2e] border border-slate-800 rounded-xl p-5 shadow-xl space-y-4">
+          <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+            <h3 class="font-bold text-white flex items-center gap-2">
+              <span id="activeSymbolBadge" class="px-2 py-0.5 rounded bg-cyan-950 text-cyan-400 text-xs border border-cyan-800">JKH</span>
+              Position Analytics
+            </h3>
+            <span id="positionStatus" class="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-400">Open Position</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 text-xs">
+            <div>
+              <div class="text-slate-400">Total Shares Held</div>
+              <div id="summaryTotalShares" class="text-sm font-semibold text-white">0</div>
+            </div>
+            <div>
+              <div class="text-slate-400">Weighted Avg Cost</div>
+              <div id="summaryAvgPrice" class="text-sm font-semibold text-white">Rs. 0.00</div>
+            </div>
+            <div>
+              <div class="text-slate-400">Total Capital Invested</div>
+              <div id="summaryTotalInvested" class="text-sm font-semibold text-white">Rs. 0.00</div>
+            </div>
+            <div>
+              <div class="text-slate-400">Current Market Value</div>
+              <div id="summaryMarketValue" class="text-sm font-semibold text-white">Rs. 0.00</div>
+            </div>
+            <div>
+              <div class="text-slate-400">Unrealized P/L</div>
+              <div id="summaryUnrealizedPL" class="text-sm font-semibold text-slate-300">Rs. 0.00</div>
+            </div>
+            <div>
+              <div class="text-slate-400">Break-Even Price</div>
+              <div id="summaryBreakEven" class="text-sm font-semibold text-cyan-400">Rs. 0.00</div>
+            </div>
+            <div>
+              <div class="text-slate-400">Dividends Received</div>
+              <div id="summaryDividends" class="text-sm font-semibold text-emerald-400">Rs. 0.00</div>
+            </div>
+            <div>
+              <div class="text-slate-400">Est. Annualized Return (XIRR)</div>
+              <div id="summaryXIRR" class="text-sm font-semibold text-accentGold">0.00%</div>
+            </div>
+          </div>
+          
+          <div class="border-t border-slate-800/80 pt-2 text-[11px] text-slate-500 flex justify-between items-center">
+            <span>Buy/Sell Fee Rule: <span id="feeRuleDisplay">1.12% / 1.12%</span></span>
+            <button onclick="toggleSettingsModal()" class="text-cyan-400 hover:underline">Change</button>
+          </div>
+        </div>
+
+        <!-- Target Price & Scenario Calculator -->
+        <div class="bg-[#131b2e] border border-slate-800 rounded-xl p-5 shadow-xl space-y-4">
+          <h3 class="font-bold text-white text-sm border-b border-slate-800 pb-2 flex items-center gap-2">
+            <i data-lucide="target" class="w-4 h-4 text-accentGold"></i> Target Return Calculator
+          </h3>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="text-xs text-slate-400 block mb-1">Target XIRR Return (%)</label>
+              <input type="number" id="targetReturnInput" value="15" step="0.5" onchange="calculateTargetPrice()" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-white outline-none focus:border-cyan-500" />
+            </div>
+            <div>
+              <label class="text-xs text-slate-400 block mb-1">Expected Sale Date</label>
+              <input type="date" id="targetSaleDateInput" onchange="calculateTargetPrice()" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-white outline-none focus:border-cyan-500" />
+            </div>
+          </div>
+          <div class="p-3 bg-slate-900/80 border border-slate-800 rounded-lg text-center space-y-1">
+            <span class="text-xs text-slate-400">Required Target Sale Price</span>
+            <div id="targetPriceResult" class="text-2xl font-black text-accentGold">Rs. 0.00</div>
+          </div>
+        </div>
+
+        <!-- Re-entry Strategy Solver -->
+        <div class="bg-[#131b2e] border border-slate-800 rounded-xl p-5 shadow-xl space-y-3">
+          <h3 class="font-bold text-white text-sm border-b border-slate-800 pb-2 flex items-center gap-2">
+            <i data-lucide="refresh-cw" class="w-4 h-4 text-cyan-400"></i> Re-Entry Strategy Simulator
+          </h3>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <div>
+              <label class="text-slate-400">Simulated Sale Price</label>
+              <input type="number" id="reentrySalePrice" value="100" onchange="calculateReentry()" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-white outline-none" />
+            </div>
+            <div>
+              <label class="text-slate-400">New Re-Entry Price</label>
+              <input type="number" id="reentryBuyPrice" value="85" onchange="calculateReentry()" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-white outline-none" />
+            </div>
+          </div>
+          <div id="reentryResultsContainer" class="space-y-1.5 text-[11px]">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- TRANSACTION LOGGER & DIVIDENDS -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Buy Lot Form & Table -->
+        <div class="lg:col-span-2 bg-[#131b2e] border border-slate-800 rounded-xl p-5 shadow-xl space-y-4">
+          <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+            <h3 class="font-bold text-white text-sm flex items-center gap-2">
+              <i data-lucide="plus-circle" class="w-4 h-4 text-cyan-400"></i>
+              Purchase Lots Logger (<span id="loggerSymbol">JKH</span>)
+            </h3>
+          </div>
+
+          <!-- Add Purchase Form -->
+          <form id="purchaseForm" onsubmit="handleAddPurchase(event)" class="grid grid-cols-1 sm:grid-cols-4 gap-3 bg-slate-900/60 p-3 rounded-lg border border-slate-800/80">
+            <div>
+              <label class="text-[11px] text-slate-400 block mb-1">Purchase Date</label>
+              <input type="date" id="buyDate" required class="w-full bg-slate-950 border border-slate-700 rounded px-2 py-1 text-xs text-white outline-none focus:border-cyan-500" />
+            </div>
+            <div>
+              <label class="text-[11px] text-slate-400 block mb-1">Quantity (Shares)</label>
+              <input type="number" id="buyQty" min="1" required placeholder="500" class="w-full bg-slate-950 border border-slate-700 rounded px-2 py-1 text-xs text-white outline-none focus:border-cyan-500" />
+            </div>
+            <div>
+              <label class="text-[11px] text-slate-400 block mb-1">Price per Share (Rs.)</label>
+              <input type="number" step="0.01" id="buyPrice" required placeholder="80.00" class="w-full bg-slate-950 border border-slate-700 rounded px-2 py-1 text-xs text-white outline-none focus:border-cyan-500" />
+            </div>
+            <div class="flex items-end">
+              <button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-medium py-1.5 px-3 rounded text-xs transition">Add Purchase</button>
+            </div>
+          </form>
+
+          <!-- Table of Purchases -->
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="border-b border-slate-800 text-slate-400 bg-slate-900/40">
+                  <th class="py-2 px-3">Date</th>
+                  <th class="py-2 px-3">Quantity</th>
+                  <th class="py-2 px-3">Gross Price</th>
+                  <th class="py-2 px-3">Buy Fee</th>
+                  <th class="py-2 px-3">Total Cost</th>
+                  <th class="py-2 px-3 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody id="purchasesTableBody" class="divide-y divide-slate-800/50">
+                <!-- Injected via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Dividend Logger -->
+        <div class="bg-[#131b2e] border border-slate-800 rounded-xl p-5 shadow-xl space-y-4">
+          <h3 class="font-bold text-white text-sm border-b border-slate-800 pb-3 flex items-center gap-2">
+            <i data-lucide="coins" class="w-4 h-4 text-emerald-400"></i> Dividend Receipts
+          </h3>
+
+          <form id="dividendForm" onsubmit="handleAddDividend(event)" class="space-y-2 bg-slate-900/60 p-3 rounded-lg border border-slate-800">
+            <div>
+              <label class="text-[11px] text-slate-400 block mb-1">Receipt Date</label>
+              <input type="date" id="divDate" required class="w-full bg-slate-950 border border-slate-700 rounded px-2 py-1 text-xs text-white outline-none" />
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-[11px] text-slate-400 block mb-1">DPS (Rs.)</label>
+                <input type="number" step="0.01" id="divDPS" required placeholder="2.50" class="w-full bg-slate-950 border border-slate-700 rounded px-2 py-1 text-xs text-white outline-none" />
+              </div>
+              <div>
+                <label class="text-[11px] text-slate-400 block mb-1">Eligible Shares</label>
+                <input type="number" id="divShares" required placeholder="500" class="w-full bg-slate-950 border border-slate-700 rounded px-2 py-1 text-xs text-white outline-none" />
+              </div>
+            </div>
+            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-1.5 px-3 rounded text-xs transition">Record Dividend</button>
+          </form>
+
+          <div class="overflow-y-auto max-h-48 scrollbar-thin">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="border-b border-slate-800 text-slate-400">
+                  <th class="py-1.5">Date</th>
+                  <th class="py-1.5">DPS</th>
+                  <th class="py-1.5">Total Rec.</th>
+                  <th class="py-1.5 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody id="dividendsTableBody" class="divide-y divide-slate-800/40">
+                <!-- Injected via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- PORTFOLIO OVERVIEW TABLE -->
+      <div class="bg-[#131b2e] border border-slate-800 rounded-xl p-5 shadow-xl space-y-4">
+        <h3 class="font-bold text-white text-sm border-b border-slate-800 pb-3 flex items-center justify-between">
+          <span>Overall Portfolio Allocation & Returns</span>
+          <span class="text-xs font-normal text-slate-400">All Tickers</span>
+        </h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="border-b border-slate-800 text-slate-400 bg-slate-900/40">
+                <th class="py-2.5 px-3">Symbol</th>
+                <th class="py-2.5 px-3">Shares</th>
+                <th class="py-2.5 px-3">Avg Cost</th>
+                <th class="py-2.5 px-3">Total Invested</th>
+                <th class="py-2.5 px-3">Market Value</th>
+                <th class="py-2.5 px-3">Unrealized P/L</th>
+                <th class="py-2.5 px-3">Dividends</th>
+                <th class="py-2.5 px-3">Return %</th>
+                <th class="py-2.5 px-3">XIRR</th>
+              </tr>
+            </thead>
+            <tbody id="portfolioOverviewTable" class="divide-y divide-slate-800/60">
+              <!-- Injected via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- MODULE B — FUTURE WEALTH PLANNER -->
+    <div id="tabPlanner" class="space-y-6 hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Planner Configuration Form -->
+        <div class="bg-[#131b2e] border border-slate-800 rounded-xl p-5 shadow-xl space-y-4">
+          <h3 class="font-bold text-white text-sm border-b border-slate-800 pb-3 flex items-center gap-2">
+            <i data-lucide="sliders" class="w-4 h-4 text-cyan-400"></i>
+            Projection Parameters
+          </h3>
+
+          <div class="space-y-3 text-xs">
+            <div>
+              <label class="text-slate-400 block mb-1">Initial Lump Sum (Rs.)</label>
+              <input type="number" id="planInitial" value="500000" oninput="calculatePlanner()" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-white outline-none focus:border-cyan-500" />
+            </div>
+
+            <div>
+              <label class="text-slate-400 block mb-1">Recurring Contribution (Rs.)</label>
+              <input type="number" id="planContribution" value="25000" oninput="calculatePlanner()" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-white outline-none focus:border-cyan-500" />
+            </div>
+
+            <div>
+              <label class="text-slate-400 block mb-1">Contribution Frequency</label>
+              <select id="planFrequency" onchange="calculatePlanner()" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-white outline-none focus:border-cyan-500">
+                <option value="12">Monthly</option>
+                <option value="4">Quarterly</option>
+                <option value="2">Semi-Annually</option>
+                <option value="1">Annually</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="text-slate-400 block mb-1">Investment Horizon (Years)</label>
+              <input type="number" id="planYears" value="20" min="1" max="50" oninput="calculatePlanner()" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-white outline-none focus:border-cyan-500" />
+            </div>
+
+            <div>
+              <label class="text-slate-400 block mb-1">Expected Annual Return (%)</label>
+              <input type="number" id="planReturn" value="12" step="0.5" oninput="calculatePlanner()" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-white outline-none focus:border-cyan-500" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Future Wealth Results & Chart -->
+        <div class="lg:col-span-2 bg-[#131b2e] border border-slate-800 rounded-xl p-5 shadow-xl space-y-4 flex flex-col justify-between">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 border-b border-slate-800 pb-4">
+            <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-800">
+              <span class="text-xs text-slate-400 block">Total Capital Invested</span>
+              <span id="plannerTotalInvested" class="text-lg font-bold text-white">Rs. 0.00</span>
+            </div>
+            <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-800">
+              <span class="text-xs text-slate-400 block">Projected Capital Growth</span>
+              <span id="plannerGrowth" class="text-lg font-bold text-emerald-400">Rs. 0.00</span>
+            </div>
+            <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-800">
+              <span class="text-xs text-slate-400 block">Estimated Portfolio Value</span>
+              <span id="plannerFinalValue" class="text-lg font-bold text-cyan-400">Rs. 0.00</span>
+            </div>
+          </div>
+
+          <!-- Chart Area -->
+          <div class="relative h-64 w-full pt-2">
+            <canvas id="wealthChart"></canvas>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Schedule Table -->
+      <div class="bg-[#131b2e] border border-slate-800 rounded-xl p-5 shadow-xl space-y-4">
+        <h3 class="font-bold text-white text-sm border-b border-slate-800 pb-3 flex items-center justify-between">
+          <span>Detailed Accumulation Schedule</span>
+          <span class="text-xs text-slate-400 font-normal">Annual Breakdown</span>
+        </h3>
+        <div class="overflow-x-auto max-h-64 scrollbar-thin">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="border-b border-slate-800 text-slate-400 sticky top-0 bg-[#131b2e]">
+                <th class="py-2 px-3">Year</th>
+                <th class="py-2 px-3">Annual Contribution</th>
+                <th class="py-2 px-3">Cumulative Invested</th>
+                <th class="py-2 px-3">Growth Earned</th>
+                <th class="py-2 px-3">End Year Value</th>
+              </tr>
+            </thead>
+            <tbody id="plannerScheduleBody" class="divide-y divide-slate-800/60">
+              <!-- Injected via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- CALCULATION TRANSPARENCY SECTION -->
+    <section class="bg-[#131b2e] border border-slate-800 rounded-xl p-4 shadow-xl">
+      <details class="group">
+        <summary class="cursor-pointer text-xs font-semibold text-slate-400 group-hover:text-cyan-400 flex items-center justify-between">
+          <span class="flex items-center gap-2">
+            <i data-lucide="help-circle" class="w-4 h-4 text-cyan-400"></i>
+            How are these calculations performed? (Financial Transparency)
+          </span>
+          <i data-lucide="chevron-down" class="w-4 h-4 transition-transform group-open:rotate-180"></i>
+        </summary>
+        <div class="mt-4 pt-4 border-t border-slate-800/80 text-xs text-slate-400 space-y-2 leading-relaxed">
+          <p><strong class="text-slate-200">Net Profit / Loss:</strong> Net Sale Proceeds + Accumulated Dividends − Total Invested Capital (including purchase fees).</p>
+          <p><strong class="text-slate-200">Break-Even Price:</strong> (Total Invested Capital − Total Dividends Received) ÷ [Total Shares × (1 − Sell Fee Rate)].</p>
+          <p><strong class="text-slate-200">Annualized Return (XIRR):</strong> Solved numerically via Newton-Raphson cash flow discount roots: $\sum \frac{C_i}{(1 + r)^{(t_i - t_0)/365}} = 0$.</p>
+          <p><strong class="text-slate-200">Re-Entry Strategies:</strong> Calculates fee-adjusted capital availability after liquidating existing positions at a test price.</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- DISCLAIMER FOOTER -->
+    <footer class="text-center text-[11px] text-slate-500 border-t border-slate-800/60 pt-4 pb-8 space-y-2">
+      <p>This tool is an educational planning and simulation tool. Calculations are estimates based on user-provided assumptions and transaction data and should not be considered financial advice. Market prices, fees, taxes, dividends, and investment returns may vary.</p>
+      <div class="flex items-center justify-center space-x-4 pt-2">
+        <button onclick="exportDataJSON()" class="text-cyan-400 hover:underline">Export JSON Backup</button>
+        <span>•</span>
+        <label class="text-cyan-400 hover:underline cursor-pointer">
+          Import JSON Backup
+          <input type="file" accept=".json" onchange="importDataJSON(event)" class="hidden" />
+        </label>
+        <span>•</span>
+        <button onclick="resetApplicationState()" class="text-rose-400 hover:underline">Reset App</button>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- MODAL: SETTINGS -->
+  <div id="settingsModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+    <div class="bg-[#131b2e] border border-slate-800 rounded-xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 class="font-bold text-white flex items-center gap-2">
+          <i data-lucide="settings" class="w-4 h-4 text-cyan-400"></i> Global Settings
+        </h3>
+        <button onclick="toggleSettingsModal()" class="text-slate-400 hover:text-white">&times;</button>
+      </div>
+      
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="text-slate-400 block mb-1">Buy Transaction Fee Rate (%)</label>
+          <input type="number" step="0.01" id="settingBuyFee" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-white outline-none focus:border-cyan-500" />
+        </div>
+        <div>
+          <label class="text-slate-400 block mb-1">Sell Transaction Fee Rate (%)</label>
+          <input type="number" step="0.01" id="settingSellFee" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-white outline-none focus:border-cyan-500" />
+        </div>
+      </div>
+
+      <div class="flex justify-end space-x-2 pt-2">
+        <button onclick="toggleSettingsModal()" class="px-4 py-2 rounded bg-slate-800 text-xs text-slate-300 hover:bg-slate-700">Cancel</button>
+        <button onclick="saveSettings()" class="px-4 py-2 rounded bg-cyan-600 text-xs text-white font-medium hover:bg-cyan-500">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- APPLICATION LOGIC CODE -->
+  <script>
+    // DEMO DATA TABLE
+    const DEMO_PRICES = {
+      SAMP: 82.40,
+      JKH: 25.10,
+      COMB: 104.50,
+      HNB: 285.00,
+      HAYL: 98.20,
+      DIAL: 12.40,
+      MELS: 75.80
+    };
+
+    // CSE OFFICIAL SYMBOL MAPPER
+    const CSE_SYMBOL_MAP = {
+      'SAMP': 'SAMP.N0000',
+      'JKH': 'JKH.N0000',
+      'COMB': 'COMB.N0000',
+      'HNB': 'HNB.N0000',
+      'HAYL': 'HAYL.N0000',
+      'DIAL': 'DIAL.N0000',
+      'MELS': 'MELS.N0000'
+    };
+
+    // DEFAULT STATE
+    let appState = {
+      isDemoMode: true,
+      selectedStock: 'JKH',
+      settings: {
+        buyFeeRate: 0.0112, // 1.12%
+        sellFeeRate: 0.0112  // 1.12%
+      },
+      customPrices: { ...DEMO_PRICES },
+      portfolio: {
+        JKH: { purchases: [], dividends: [] },
+        SAMP: { purchases: [], dividends: [] },
+        COMB: { purchases: [], dividends: [] },
+        HNB: { purchases: [], dividends: [] },
+        HAYL: { purchases: [], dividends: [] },
+        DIAL: { purchases: [], dividends: [] },
+        MELS: { purchases: [], dividends: [] }
+      }
+    };
+
+    let wealthChartInstance = null;
+
+    // CURRENCY FORMATTER
+    function formatLKR(value) {
+      if (isNaN(value) || value === null) return 'Rs. 0.00';
+      return 'Rs. ' + Number(value).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    // INITIALIZATION
+    document.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      lucide.createIcons();
+      initDefaultPurchasesIfEmpty();
+      updateBannerUI();
+      renderTicker();
+      handleStockSelect(appState.selectedStock);
+      calculatePlanner();
+      
+      // Set default target sale date to 1 year ahead
+      const nextYear = new Date();
+      nextYear.setFullYear(nextYear.getFullYear() + 1);
+      document.getElementById('targetSaleDateInput').value = nextYear.toISOString().split('T')[0];
+    });
+
+    function initDefaultPurchasesIfEmpty() {
+      const jkh = appState.portfolio.JKH;
+      if (jkh.purchases.length === 0) {
+        jkh.purchases = [
+          { id: '1', date: '2026-01-10', quantity: 500, price: 80.00 },
+          { id: '2', date: '2026-03-15', quantity: 300, price: 85.00 },
+          { id: '3', date: '2026-06-20', quantity: 200, price: 90.00 }
         ];
+        jkh.dividends = [
+          { id: 'd1', date: '2026-08-01', dps: 2.50, shares: 1000 }
+        ];
+        saveState();
+      }
+    }
 
-        let state = {
-            settings: { ...DEFAULT_SETTINGS },
-            activeTab: 'planner',
-            plannerTableMode: 'yearly',
-            selectedSymbol: 'JKH',
-            testPrices: {},
-            portfolio: {
-                JKH: {
-                    purchases: [
-                        { id: 'p1', date: '2026-01-10', quantity: 500, price: 80.00 },
-                        { id: 'p2', date: '2026-03-15', quantity: 300, price: 85.00 },
-                        { id: 'p3', date: '2026-06-20', quantity: 200, price: 90.00 }
-                    ],
-                    dividends: [
-                        { id: 'd1', date: '2026-05-01', dps: 2.50, eligibleShares: 800 }
-                    ]
-                }
+    // DATA ABSTRACTION LAYER (METHOD 1 - LIVE CSE DATA VIA CORS PROXY)
+    async function getMarketPrice(symbol) {
+      if (appState.isDemoMode) {
+        return appState.customPrices[symbol] || DEMO_PRICES[symbol] || 100.00;
+      }
+
+      try {
+        const officialSymbol = CSE_SYMBOL_MAP[symbol] || `${symbol}.N0000`;
+        const targetCseUrl = 'https://www.cse.lk/api/allSecurityCode';
+        const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(targetCseUrl)}`;
+
+        const response = await fetch(proxyUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({})
+        });
+
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const data = await response.json();
+        const stockData = data.find(item => item.symbol === officialSymbol || item.symbol === symbol);
+
+        if (stockData && stockData.lastTradedPrice) {
+          return parseFloat(stockData.lastTradedPrice);
+        } else {
+          return appState.customPrices[symbol] || DEMO_PRICES[symbol];
+        }
+      } catch (err) {
+        console.warn(`[LIVE CSE FETCH ERROR] Falling back to demo price for ${symbol}.`, err);
+        return appState.customPrices[symbol] || DEMO_PRICES[symbol];
+      }
+    }
+
+    // MODE TOGGLER
+    async function toggleDataMode(isDemo) {
+      appState.isDemoMode = isDemo;
+      saveState();
+      updateBannerUI();
+      renderTicker();
+      await handleStockSelect(appState.selectedStock);
+    }
+
+    function updateBannerUI() {
+      const demoBtn = document.getElementById('modeDemoBtn');
+      const liveBtn = document.getElementById('modeLiveBtn');
+      const banner = document.getElementById('dataModeBanner');
+
+      if (appState.isDemoMode) {
+        demoBtn.className = 'px-3 py-1 rounded-md transition-all font-medium bg-cyan-600 text-white shadow';
+        liveBtn.className = 'px-3 py-1 rounded-md transition-all font-medium text-slate-400 hover:text-white';
+        banner.className = 'p-3 rounded-lg border text-xs flex items-center justify-between bg-amber-950/30 border-amber-800/50 text-amber-300';
+        banner.innerHTML = `
+          <div class="flex items-center space-x-2">
+            <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400"></i>
+            <span><strong>DEMO MARKET DATA ACTIVE:</strong> Prices are simulated for planning purposes.</span>
+          </div>
+          <button onclick="toggleDataMode(false)" class="underline font-semibold hover:text-white">Switch to Live Data</button>
+        `;
+      } else {
+        liveBtn.className = 'px-3 py-1 rounded-md transition-all font-medium bg-cyan-600 text-white shadow';
+        demoBtn.className = 'px-3 py-1 rounded-md transition-all font-medium text-slate-400 hover:text-white';
+        banner.className = 'p-3 rounded-lg border text-xs flex items-center justify-between bg-emerald-950/30 border-emerald-800/50 text-emerald-300';
+        banner.innerHTML = `
+          <div class="flex items-center space-x-2">
+            <i data-lucide="wifi" class="w-4 h-4 text-emerald-400"></i>
+            <span><strong>LIVE CSE ARCHITECTURE ACTIVE:</strong> Attempting to stream live market feeds from cse.lk via CORS proxy.</span>
+          </div>
+          <button onclick="toggleDataMode(true)" class="underline font-semibold hover:text-white">Switch to Demo Mode</button>
+        `;
+      }
+      lucide.createIcons();
+    }
+
+    async function renderTicker() {
+      const container = document.getElementById('tickerContainer');
+      container.innerHTML = '';
+
+      for (const sym of Object.keys(DEMO_PRICES)) {
+        const price = await getMarketPrice(sym);
+        const item = document.createElement('div');
+        item.className = 'flex items-center space-x-2 bg-slate-900/80 px-2.5 py-1 rounded border border-slate-800';
+        item.innerHTML = `
+          <span class="font-bold text-white">${sym}</span>
+          <span class="text-slate-300">${formatLKR(price)}</span>
+        `;
+        container.appendChild(item);
+      }
+    }
+
+    // STOCK SELECTION & UI SYNC
+    async function handleStockSelect(symbol) {
+      appState.selectedStock = symbol;
+      saveState();
+
+      document.getElementById('stockSelector').value = symbol;
+      document.getElementById('activeSymbolBadge').innerText = symbol;
+      document.getElementById('loggerSymbol').innerText = symbol;
+
+      const currentPrice = await getMarketPrice(symbol);
+      document.getElementById('selectedStockPrice').value = currentPrice;
+
+      renderActiveStockPortfolio();
+      renderPortfolioOverviewTable();
+      calculateTargetPrice();
+      calculateReentry();
+    }
+
+    function updateCustomPrice(val) {
+      const price = parseFloat(val) || 0;
+      appState.customPrices[appState.selectedStock] = price;
+      saveState();
+      renderActiveStockPortfolio();
+      renderPortfolioOverviewTable();
+      calculateTargetPrice();
+      calculateReentry();
+    }
+
+    // MODULE C CALCULATION ENGINES
+    function getStockSummary(symbol, currentPrice) {
+      const pos = appState.portfolio[symbol] || { purchases: [], dividends: [] };
+      const buyFee = appState.settings.buyFeeRate;
+      const sellFee = appState.settings.sellFeeRate;
+
+      let totalShares = 0;
+      let totalGrossCost = 0;
+      let totalBuyFees = 0;
+
+      pos.purchases.forEach(p => {
+        totalShares += p.quantity;
+        const gross = p.quantity * p.price;
+        totalGrossCost += gross;
+        totalBuyFees += gross * buyFee;
+      });
+
+      const totalInvestedCapital = totalGrossCost + totalBuyFees;
+      const avgPrice = totalShares > 0 ? (totalGrossCost / totalShares) : 0;
+
+      let totalDividends = 0;
+      pos.dividends.forEach(d => {
+        totalDividends += (d.dps * d.shares);
+      });
+
+      const currentGrossValue = totalShares * currentPrice;
+      const estimatedSellFees = currentGrossValue * sellFee;
+      const netMarketProceeds = currentGrossValue - estimatedSellFees;
+
+      const unrealizedPL = netMarketProceeds + totalDividends - totalInvestedCapital;
+      
+      // Break-even price calculation accounting for sell fees & dividends
+      let breakEvenPrice = 0;
+      if (totalShares > 0) {
+        breakEvenPrice = (totalInvestedCapital - totalDividends) / (totalShares * (1 - sellFee));
+        if (breakEvenPrice < 0) breakEvenPrice = 0;
+      }
+
+      // Calculate Money-Weighted Annualized Return (XIRR)
+      const xirr = calculateXIRRForStock(pos, currentPrice, sellFee);
+
+      return {
+        totalShares,
+        avgPrice,
+        totalInvestedCapital,
+        currentGrossValue,
+        totalDividends,
+        unrealizedPL,
+        breakEvenPrice,
+        xirr
+      };
+    }
+
+    function renderActiveStockPortfolio() {
+      const symbol = appState.selectedStock;
+      const currentPrice = parseFloat(document.getElementById('selectedStockPrice').value) || 0;
+      const summary = getStockSummary(symbol, currentPrice);
+
+      document.getElementById('summaryTotalShares').innerText = summary.totalShares.toLocaleString();
+      document.getElementById('summaryAvgPrice').innerText = formatLKR(summary.avgPrice);
+      document.getElementById('summaryTotalInvested').innerText = formatLKR(summary.totalInvestedCapital);
+      document.getElementById('summaryMarketValue').innerText = formatLKR(summary.currentGrossValue);
+      document.getElementById('summaryUnrealizedPL').innerText = formatLKR(summary.unrealizedPL);
+      document.getElementById('summaryUnrealizedPL').className = summary.unrealizedPL >= 0 ? 'text-sm font-semibold text-emerald-400' : 'text-sm font-semibold text-rose-400';
+      document.getElementById('summaryBreakEven').innerText = formatLKR(summary.breakEvenPrice);
+      document.getElementById('summaryDividends').innerText = formatLKR(summary.totalDividends);
+      document.getElementById('summaryXIRR').innerText = (summary.xirr * 100).toFixed(2) + '%';
+
+      document.getElementById('feeRuleDisplay').innerText = `${(appState.settings.buyFeeRate * 100).toFixed(2)}% / ${(appState.settings.sellFeeRate * 100).toFixed(2)}%`;
+
+      // Render Tables
+      renderPurchasesTable();
+      renderDividendsTable();
+    }
+
+    function renderPurchasesTable() {
+      const pos = appState.portfolio[appState.selectedStock];
+      const tbody = document.getElementById('purchasesTableBody');
+      tbody.innerHTML = '';
+
+      pos.purchases.forEach((p, idx) => {
+        const gross = p.quantity * p.price;
+        const fee = gross * appState.settings.buyFeeRate;
+        const total = gross + fee;
+
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-900/40';
+        tr.innerHTML = `
+          <td class="py-2 px-3">${p.date}</td>
+          <td class="py-2 px-3">${p.quantity}</td>
+          <td class="py-2 px-3">${formatLKR(p.price)}</td>
+          <td class="py-2 px-3 text-slate-400">${formatLKR(fee)}</td>
+          <td class="py-2 px-3 font-semibold text-white">${formatLKR(total)}</td>
+          <td class="py-2 px-3 text-right">
+            <button onclick="deletePurchase(${idx})" class="text-rose-400 hover:text-rose-300 text-xs">Delete</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderDividendsTable() {
+      const pos = appState.portfolio[appState.selectedStock];
+      const tbody = document.getElementById('dividendsTableBody');
+      tbody.innerHTML = '';
+
+      pos.dividends.forEach((d, idx) => {
+        const total = d.dps * d.shares;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="py-1.5">${d.date}</td>
+          <td class="py-1.5">${formatLKR(d.dps)}</td>
+          <td class="py-1.5 text-emerald-400 font-medium">${formatLKR(total)}</td>
+          <td class="py-1.5 text-right">
+            <button onclick="deleteDividend(${idx})" class="text-rose-400 hover:underline">Remove</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function handleAddPurchase(e) {
+      e.preventDefault();
+      const date = document.getElementById('buyDate').value;
+      const qty = parseInt(document.getElementById('buyQty').value);
+      const price = parseFloat(document.getElementById('buyPrice').value);
+
+      if (!date || qty <= 0 || price <= 0) return;
+
+      appState.portfolio[appState.selectedStock].purchases.push({
+        id: Date.now().toString(),
+        date,
+        quantity: qty,
+        price
+      });
+
+      saveState();
+      renderActiveStockPortfolio();
+      renderPortfolioOverviewTable();
+      calculateTargetPrice();
+      calculateReentry();
+      
+      document.getElementById('buyQty').value = '';
+      document.getElementById('buyPrice').value = '';
+    }
+
+    function handleAddDividend(e) {
+      e.preventDefault();
+      const date = document.getElementById('divDate').value;
+      const dps = parseFloat(document.getElementById('divDPS').value);
+      const shares = parseInt(document.getElementById('divShares').value);
+
+      if (!date || dps <= 0 || shares <= 0) return;
+
+      appState.portfolio[appState.selectedStock].dividends.push({
+        id: Date.now().toString(),
+        date,
+        dps,
+        shares
+      });
+
+      saveState();
+      renderActiveStockPortfolio();
+      renderPortfolioOverviewTable();
+      calculateTargetPrice();
+      calculateReentry();
+
+      document.getElementById('divDPS').value = '';
+      document.getElementById('divShares').value = '';
+    }
+
+    function deletePurchase(idx) {
+      appState.portfolio[appState.selectedStock].purchases.splice(idx, 1);
+      saveState();
+      renderActiveStockPortfolio();
+      renderPortfolioOverviewTable();
+      calculateTargetPrice();
+      calculateReentry();
+    }
+
+    function deleteDividend(idx) {
+      appState.portfolio[appState.selectedStock].dividends.splice(idx, 1);
+      saveState();
+      renderActiveStockPortfolio();
+      renderPortfolioOverviewTable();
+      calculateTargetPrice();
+      calculateReentry();
+    }
+
+    // NEWTON-RAPHSON NUMERICAL XIRR ENGINE
+    function calculateXIRRForStock(pos, currentPrice, sellFee) {
+      const cashFlows = [];
+
+      // Cash Outflows (Purchases)
+      pos.purchases.forEach(p => {
+        const gross = p.quantity * p.price;
+        const totalCost = gross + (gross * appState.settings.buyFeeRate);
+        cashFlows.push({ date: new Date(p.date), amount: -totalCost });
+      });
+
+      // Cash Inflows (Dividends)
+      pos.dividends.forEach(d => {
+        cashFlows.push({ date: new Date(d.date), amount: d.dps * d.shares });
+      });
+
+      // Hypothetical Final Inflow (Sale Proceeds Today)
+      let totalShares = pos.purchases.reduce((acc, cur) => acc + cur.quantity, 0);
+      if (totalShares > 0) {
+        const currentGross = totalShares * currentPrice;
+        const netProceeds = currentGross - (currentGross * sellFee);
+        cashFlows.push({ date: new Date(), amount: netProceeds });
+      }
+
+      if (cashFlows.length < 2) return 0;
+
+      // XIRR Root Solver
+      return solveXIRR(cashFlows);
+    }
+
+    function solveXIRR(cashFlows) {
+      let rate = 0.10; // Initial guess 10%
+      const maxIterations = 100;
+      const precision = 1e-6;
+
+      const startDate = cashFlows.reduce((min, cf) => cf.date < min ? cf.date : min, cashFlows[0].date);
+
+      for (let i = 0; i < maxIterations; i++) {
+        let fValue = 0;
+        let fDerivative = 0;
+
+        for (const cf of cashFlows) {
+          const years = (cf.date - startDate) / (1000 * 60 * 60 * 24 * 365.25);
+          const discountFactor = Math.pow(1 + rate, years);
+          fValue += cf.amount / discountFactor;
+          fDerivative -= (years * cf.amount) / (discountFactor * (1 + rate));
+        }
+
+        const newRate = rate - fValue / fDerivative;
+        if (Math.abs(newRate - rate) < precision) {
+          return newRate;
+        }
+        rate = newRate;
+      }
+      return rate;
+    }
+
+    // TARGET PRICE SOLVER
+    function calculateTargetPrice() {
+      const symbol = appState.selectedStock;
+      const pos = appState.portfolio[symbol];
+      const targetRate = (parseFloat(document.getElementById('targetReturnInput').value) || 0) / 100;
+      const targetDateStr = document.getElementById('targetSaleDateInput').value;
+
+      if (!targetDateStr || pos.purchases.length === 0) {
+        document.getElementById('targetPriceResult').innerText = 'Rs. 0.00';
+        return;
+      }
+
+      const targetDate = new Date(targetDateStr);
+      const sellFee = appState.settings.sellFeeRate;
+      const totalShares = pos.purchases.reduce((acc, p) => acc + p.quantity, 0);
+
+      if (totalShares === 0) {
+        document.getElementById('targetPriceResult').innerText = 'Rs. 0.00';
+        return;
+      }
+
+      // Calculate Net Present Target Proceeds required
+      const startDate = pos.purchases.reduce((min, p) => new Date(p.date) < min ? new Date(p.date) : min, new Date(pos.purchases[0].date));
+      
+      let requiredTerminalValue = 0;
+      pos.purchases.forEach(p => {
+        const gross = p.quantity * p.price;
+        const cost = gross + (gross * appState.settings.buyFeeRate);
+        const years = (targetDate - new Date(p.date)) / (1000 * 60 * 60 * 24 * 365.25);
+        requiredTerminalValue += cost * Math.pow(1 + targetRate, years);
+      });
+
+      pos.dividends.forEach(d => {
+        const years = (targetDate - new Date(d.date)) / (1000 * 60 * 60 * 24 * 365.25);
+        requiredTerminalValue -= (d.dps * d.shares) * Math.pow(1 + targetRate, years);
+      });
+
+      const requiredNetProceeds = Math.max(0, requiredTerminalValue);
+      const requiredGrossProceeds = requiredNetProceeds / (1 - sellFee);
+      const targetPrice = requiredGrossProceeds / totalShares;
+
+      document.getElementById('targetPriceResult').innerText = formatLKR(targetPrice);
+    }
+
+    // RE-ENTRY STRATEGY SOLVER
+    function calculateReentry() {
+      const symbol = appState.selectedStock;
+      const pos = appState.portfolio[symbol];
+      const testSalePrice = parseFloat(document.getElementById('reentrySalePrice').value) || 0;
+      const reentryPrice = parseFloat(document.getElementById('reentryBuyPrice').value) || 0;
+
+      const container = document.getElementById('reentryResultsContainer');
+
+      const totalShares = pos.purchases.reduce((acc, p) => acc + p.quantity, 0);
+      if (totalShares === 0 || testSalePrice <= 0 || reentryPrice <= 0) {
+        container.innerHTML = '<span class="text-slate-500">Add purchases to enable strategy engine.</span>';
+        return;
+      }
+
+      const buyFee = appState.settings.buyFeeRate;
+      const sellFee = appState.settings.sellFeeRate;
+
+      const summary = getStockSummary(symbol, testSalePrice);
+      const netSaleProceeds = (totalShares * testSalePrice) * (1 - sellFee);
+
+      // Strategy 1: Capital Protection
+      const targetCapital = summary.totalInvestedCapital;
+      const effectiveReentryCost = reentryPrice * (1 + buyFee);
+      const capProtectShares = Math.floor(targetCapital / effectiveReentryCost);
+      const capProtectCash = netSaleProceeds - (capProtectShares * effectiveReentryCost);
+
+      // Strategy 2: Complete Reinvestment
+      const reinvestShares = Math.floor(netSaleProceeds / effectiveReentryCost);
+      const reinvestCash = netSaleProceeds - (reinvestShares * effectiveReentryCost);
+
+      container.innerHTML = `
+        <div class="p-2 bg-slate-900/60 rounded border border-slate-800 space-y-1">
+          <div class="font-semibold text-cyan-400">1. Capital Protection</div>
+          <div class="flex justify-between text-slate-300">
+            <span>Re-entry Shares: <strong>${capProtectShares}</strong></span>
+            <span>Cash Saved: <strong>${formatLKR(capProtectCash)}</strong></span>
+          </div>
+        </div>
+
+        <div class="p-2 bg-slate-900/60 rounded border border-slate-800 space-y-1">
+          <div class="font-semibold text-emerald-400">2. Complete Reinvestment</div>
+          <div class="flex justify-between text-slate-300">
+            <span>Re-entry Shares: <strong>${reinvestShares}</strong></span>
+            <span>Dust Cash: <strong>${formatLKR(reinvestCash)}</strong></span>
+          </div>
+        </div>
+      `;
+    }
+
+    // OVERVIEW TABLE RENDERER
+    async function renderPortfolioOverviewTable() {
+      const tbody = document.getElementById('portfolioOverviewTable');
+      tbody.innerHTML = '';
+
+      let grandTotalValue = 0;
+      let grandTotalInvested = 0;
+      let grandTotalDividends = 0;
+
+      for (const sym of Object.keys(appState.portfolio)) {
+        const price = await getMarketPrice(sym);
+        const summary = getStockSummary(sym, price);
+
+        if (summary.totalShares > 0 || summary.totalDividends > 0) {
+          grandTotalValue += summary.currentGrossValue;
+          grandTotalInvested += summary.totalInvestedCapital;
+          grandTotalDividends += summary.totalDividends;
+
+          const tr = document.createElement('tr');
+          tr.className = 'hover:bg-slate-900/40 border-b border-slate-800/40';
+          tr.innerHTML = `
+            <td class="py-2.5 px-3 font-bold text-cyan-400">${sym}</td>
+            <td class="py-2.5 px-3">${summary.totalShares.toLocaleString()}</td>
+            <td class="py-2.5 px-3">${formatLKR(summary.avgPrice)}</td>
+            <td class="py-2.5 px-3">${formatLKR(summary.totalInvestedCapital)}</td>
+            <td class="py-2.5 px-3">${formatLKR(summary.currentGrossValue)}</td>
+            <td class="py-2.5 px-3 ${summary.unrealizedPL >= 0 ? 'text-emerald-400' : 'text-rose-400'} font-semibold">${formatLKR(summary.unrealizedPL)}</td>
+            <td class="py-2.5 px-3 text-emerald-400">${formatLKR(summary.totalDividends)}</td>
+            <td class="py-2.5 px-3">${summary.totalInvestedCapital > 0 ? ((summary.unrealizedPL / summary.totalInvestedCapital) * 100).toFixed(2) + '%' : '0.00%'}</td>
+            <td class="py-2.5 px-3 text-accentGold font-medium">${(summary.xirr * 100).toFixed(2)}%</td>
+          `;
+          tbody.appendChild(tr);
+        }
+      }
+
+      document.getElementById('totalPortfolioValue').innerText = formatLKR(grandTotalValue);
+      document.getElementById('totalPortfolioDividends').innerText = formatLKR(grandTotalDividends);
+
+      const netPL = grandTotalValue - grandTotalInvested + grandTotalDividends;
+      const returnPct = grandTotalInvested > 0 ? (netPL / grandTotalInvested) * 100 : 0;
+      
+      const plEl = document.getElementById('totalPortfolioReturn');
+      plEl.innerText = `P/L: ${formatLKR(netPL)} (${returnPct.toFixed(2)}%)`;
+      plEl.className = netPL >= 0 ? 'text-xs mt-1 text-emerald-400 font-medium' : 'text-xs mt-1 text-rose-400 font-medium';
+    }
+
+    // MODULE B — WEALTH PLANNER
+    function calculatePlanner() {
+      const initial = parseFloat(document.getElementById('planInitial').value) || 0;
+      const contribution = parseFloat(document.getElementById('planContribution').value) || 0;
+      const freq = parseInt(document.getElementById('planFrequency').value) || 12;
+      const years = parseInt(document.getElementById('planYears').value) || 1;
+      const rate = (parseFloat(document.getElementById('planReturn').value) || 0) / 100;
+
+      const scheduleBody = document.getElementById('plannerScheduleBody');
+      scheduleBody.innerHTML = '';
+
+      let currentBalance = initial;
+      let totalInvested = initial;
+
+      const labels = [0];
+      const investedData = [initial];
+      const valueData = [initial];
+
+      for (let y = 1; y <= years; y++) {
+        let annualContribution = contribution * freq;
+        totalInvested += annualContribution;
+
+        // Compound interest logic
+        for (let period = 0; period < freq; period++) {
+          currentBalance = (currentBalance + contribution) * (1 + rate / freq);
+        }
+
+        const growthEarned = currentBalance - totalInvested;
+
+        labels.push(y);
+        investedData.push(totalInvested);
+        valueData.push(currentBalance);
+
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-900/40 border-b border-slate-800/40';
+        tr.innerHTML = `
+          <td class="py-2 px-3 font-semibold text-white">Year ${y}</td>
+          <td class="py-2 px-3">${formatLKR(annualContribution)}</td>
+          <td class="py-2 px-3">${formatLKR(totalInvested)}</td>
+          <td class="py-2 px-3 text-emerald-400">${formatLKR(growthEarned)}</td>
+          <td class="py-2 px-3 font-bold text-cyan-400">${formatLKR(currentBalance)}</td>
+        `;
+        scheduleBody.appendChild(tr);
+      }
+
+      document.getElementById('plannerTotalInvested').innerText = formatLKR(totalInvested);
+      document.getElementById('plannerGrowth').innerText = formatLKR(currentBalance - totalInvested);
+      document.getElementById('plannerFinalValue').innerText = formatLKR(currentBalance);
+
+      renderWealthChart(labels, investedData, valueData);
+    }
+
+    function renderWealthChart(labels, investedData, valueData) {
+      const ctx = document.getElementById('wealthChart').getContext('2d');
+
+      if (wealthChartInstance) wealthChartInstance.destroy();
+
+      wealthChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels.map(l => `Yr ${l}`),
+          datasets: [
+            {
+              label: 'Projected Value',
+              data: valueData,
+              borderColor: '#06b6d4',
+              backgroundColor: 'rgba(6, 182, 212, 0.1)',
+              fill: true,
+              tension: 0.3
+            },
+            {
+              label: 'Capital Invested',
+              data: investedData,
+              borderColor: '#64748b',
+              borderDash: [5, 5],
+              fill: false,
+              tension: 0
             }
-        };
-
-        let plannerChartInstance = null;
-
-        // =========================================================================
-        // CENTRALIZED FORMATTING & UTILITIES
-        // =========================================================================
-        function formatLKR(value) {
-            if (isNaN(value) || value === null || value === undefined) return 'Rs. 0.00';
-            return 'Rs. ' + Number(value).toLocaleString('en-LK', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: '#94a3b8', font: { size: 11 } } }
+          },
+          scales: {
+            x: { ticks: { color: '#64748b' }, grid: { color: '#1e293b' } },
+            y: { ticks: { color: '#64748b' }, grid: { color: '#1e293b' } }
+          }
         }
+      });
+    }
 
-        function formatPct(value) {
-            if (isNaN(value) || value === null || value === undefined) return '0.00%';
-            const formatted = Number(value).toFixed(2) + '%';
-            return value > 0 ? `+${formatted}` : formatted;
+    // TAB SWITCHING
+    function switchTab(tab) {
+      const pTab = document.getElementById('tabPortfolio');
+      const plTab = document.getElementById('tabPlanner');
+      const pBtn = document.getElementById('tabPortfolioBtn');
+      const plBtn = document.getElementById('tabPlannerBtn');
+
+      if (tab === 'portfolio') {
+        pTab.classList.remove('hidden');
+        plTab.classList.add('hidden');
+        pBtn.className = 'pb-3 border-b-2 border-cyan-500 text-cyan-400 font-semibold flex items-center gap-2';
+        plBtn.className = 'pb-3 border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2';
+      } else {
+        plTab.classList.remove('hidden');
+        pTab.classList.add('hidden');
+        plBtn.className = 'pb-3 border-b-2 border-cyan-500 text-cyan-400 font-semibold flex items-center gap-2';
+        pBtn.className = 'pb-3 border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2';
+      }
+    }
+
+    // SETTINGS MODAL & STATE PERSISTENCE
+    function toggleSettingsModal() {
+      const modal = document.getElementById('settingsModal');
+      if (modal.classList.contains('hidden')) {
+        document.getElementById('settingBuyFee').value = (appState.settings.buyFeeRate * 100).toFixed(2);
+        document.getElementById('settingSellFee').value = (appState.settings.sellFeeRate * 100).toFixed(2);
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      } else {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    }
+
+    function saveSettings() {
+      appState.settings.buyFeeRate = (parseFloat(document.getElementById('settingBuyFee').value) || 1.12) / 100;
+      appState.settings.sellFeeRate = (parseFloat(document.getElementById('settingSellFee').value) || 1.12) / 100;
+      saveState();
+      toggleSettingsModal();
+      renderActiveStockPortfolio();
+      renderPortfolioOverviewTable();
+      calculateTargetPrice();
+      calculateReentry();
+    }
+
+    function saveState() {
+      localStorage.setItem('CSE_WEALTH_LAB_STATE', JSON.stringify(appState));
+    }
+
+    function loadState() {
+      const saved = localStorage.getItem('CSE_WEALTH_LAB_STATE');
+      if (saved) {
+        try {
+          appState = JSON.parse(saved);
+        } catch (e) {
+          console.error("Failed to parse saved state", e);
         }
+      }
+    }
 
-        // =========================================================================
-        // MARKET DATA ABSTRACTED LAYER
-        // =========================================================================
-        function getMarketPrice(symbol) {
-            // Check if user edited the test price
-            if (state.testPrices[symbol] !== undefined && state.testPrices[symbol] !== null) {
-                return parseFloat(state.testPrices[symbol]);
-            }
-            const stock = DEMO_MARKET_DATA.find(s => s.symbol === symbol);
-            return stock ? stock.price : 100.00;
+    function exportDataJSON() {
+      const blob = new Blob([JSON.stringify(appState, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `CSE_Wealth_Lab_Backup_${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+    }
+
+    function importDataJSON(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        try {
+          appState = JSON.parse(evt.target.result);
+          saveState();
+          location.reload();
+        } catch (err) {
+          alert('Invalid JSON file imported.');
         }
-
-        // =========================================================================
-        // STATE PERSISTENCE (LOCAL STORAGE & IMPORT/EXPORT)
-        // =========================================================================
-        function saveState() {
-            localStorage.setItem('CSE_WEALTH_LAB_STATE', JSON.stringify(state));
-        }
-
-        function loadState() {
-            const saved = localStorage.getItem('CSE_WEALTH_LAB_STATE');
-            if (saved) {
-                try {
-                    state = JSON.parse(saved);
-                    if (!state.settings) state.settings = { ...DEFAULT_SETTINGS };
-                } catch (e) {
-                    console.error("Failed to parse local storage state", e);
-                }
-            }
-            // Ensure default entries exist for demo stocks if empty
-            DEMO_MARKET_DATA.forEach(stock => {
-                if (!state.portfolio[stock.symbol]) {
-                    state.portfolio[stock.symbol] = { purchases: [], dividends: [] };
-                }
-                if (state.testPrices[stock.symbol] === undefined) {
-                    state.testPrices[stock.symbol] = stock.price;
-                }
-            });
-        }
-
-        function exportData() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", `cse_wealth_lab_backup_${new Date().toISOString().split('T')[0]}.json`);
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
-        }
-
-        function importData(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const importedState = JSON.parse(e.target.result);
-                    if (importedState && importedState.portfolio) {
-                        state = importedState;
-                        saveState();
-                        initApp();
-                        alert("Data backup imported successfully!");
-                    }
-                } catch (err) {
-                    alert("Invalid JSON data backup file.");
-                }
-            };
-            reader.readAsText(file);
-        }
-
-        function confirmReset() {
-            if (confirm("Are you sure you want to reset all portfolio entries and restore default data?")) {
-                localStorage.removeItem('CSE_WEALTH_LAB_STATE');
-                location.reload();
-            }
-        }
-
-        // =========================================================================
-        // MODULE A: MARKET DASHBOARD TICKER
-        // =========================================================================
-        function renderMarketTicker() {
-            const tickerContainer = document.getElementById('marketTicker');
-            tickerContainer.innerHTML = DEMO_MARKET_DATA.map(stock => {
-                const price = getMarketPrice(stock.symbol);
-                const isPos = stock.change >= 0;
-                return `
-                    <div onclick="changeActiveStock('${stock.symbol}')" class="cursor-pointer hover:bg-cardDark px-3 py-1 rounded-lg transition border border-transparent hover:border-borderDark flex items-center space-x-2">
-                        <span class="font-bold text-white">${stock.symbol}</span>
-                        <span class="text-slate-300">${formatLKR(price)}</span>
-                        <span class="${isPos ? 'text-emerald-400' : 'text-red-400'} text-xs font-semibold">
-                            ${isPos ? '+' : ''}${stock.changePct.toFixed(2)}%
-                        </span>
-                    </div>
-                `;
-            }).join('<span class="text-slate-700">|</span>');
-        }
-
-        // =========================================================================
-        // MODULE B: FUTURE WEALTH PLANNER CALCULATIONS & CHART
-        // =========================================================================
-        function updatePlanner() {
-            const lumpSum = parseFloat(document.getElementById('planLumpSum').value) || 0;
-            const PMT = parseFloat(document.getElementById('planContribution').value) || 0;
-            const freq = parseInt(document.getElementById('planFrequency').value) || 12;
-            const years = parseInt(document.getElementById('planDuration').value) || 1;
-            const annualRate = (parseFloat(document.getElementById('planReturnRate').value) || 0) / 100;
-
-            const totalPeriods = years * freq;
-            const ratePerPeriod = annualRate / freq;
-
-            let currentBalance = lumpSum;
-            let totalInvested = lumpSum;
-
-            const labels = [];
-            const investedData = [];
-            const portfolioData = [];
-            const schedule = [];
-
-            for (let i = 1; i <= totalPeriods; i++) {
-                // Growth for the period
-                const growth = currentBalance * ratePerPeriod;
-                currentBalance += growth + PMT;
-                totalInvested += PMT;
-
-                const yearNum = Math.ceil(i / freq);
-                const periodLabel = freq === 12 ? `Month ${i}` : `Period ${i}`;
-
-                schedule.push({
-                    period: periodLabel,
-                    year: yearNum,
-                    month: i,
-                    contribution: PMT,
-                    cumulativeInvested: totalInvested,
-                    growth: currentBalance - totalInvested,
-                    portfolioValue: currentBalance
-                });
-
-                if (freq === 12 && i % 12 === 0) {
-                    labels.push(`Yr ${i/12}`);
-                    investedData.push(totalInvested);
-                    portfolioData.push(currentBalance);
-                } else if (freq !== 12) {
-                    labels.push(`P${i}`);
-                    investedData.push(totalInvested);
-                    portfolioData.push(currentBalance);
-                }
-            }
-
-            const totalGrowth = currentBalance - totalInvested;
-
-            // Render KPIs
-            document.getElementById('kpiPlanInvested').innerText = formatLKR(totalInvested);
-            document.getElementById('kpiPlanGrowth').innerText = formatLKR(totalGrowth);
-            document.getElementById('kpiPlanTotal').innerText = formatLKR(currentBalance);
-
-            // Render Schedule Table & Chart
-            renderPlannerTable(schedule);
-            renderPlannerChart(labels, investedData, portfolioData);
-        }
-
-        function setTableMode(mode) {
-            state.plannerTableMode = mode;
-            document.getElementById('btnTableYearly').className = mode === 'yearly' 
-                ? 'px-3 py-1 rounded-md bg-borderDark text-cyanAccent' 
-                : 'px-3 py-1 rounded-md text-slate-400 hover:text-white';
-            document.getElementById('btnTableMonthly').className = mode === 'monthly' 
-                ? 'px-3 py-1 rounded-md bg-borderDark text-cyanAccent' 
-                : 'px-3 py-1 rounded-md text-slate-400 hover:text-white';
-            updatePlanner();
-        }
-
-        function renderPlannerTable(schedule) {
-            const tbody = document.getElementById('plannerTableBody');
-            tbody.innerHTML = '';
-
-            let displayRows = schedule;
-            if (state.plannerTableMode === 'yearly') {
-                const freq = parseInt(document.getElementById('planFrequency').value) || 12;
-                displayRows = schedule.filter(item => item.month % freq === 0 || item.period.startsWith('Year'));
-            }
-
-            displayRows.forEach(row => {
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-cardDark/60 transition";
-                tr.innerHTML = `
-                    <td class="py-2 px-3 font-semibold text-slate-200">${row.period}</td>
-                    <td class="py-2 px-3">${formatLKR(row.contribution)}</td>
-                    <td class="py-2 px-3 text-slate-300">${formatLKR(row.cumulativeInvested)}</td>
-                    <td class="py-2 px-3 text-emerald-400">${formatLKR(row.growth)}</td>
-                    <td class="py-2 px-3 font-bold text-cyanAccent">${formatLKR(row.portfolioValue)}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function renderPlannerChart(labels, investedData, portfolioData) {
-            const ctx = document.getElementById('plannerChart').getContext('2d');
-            if (plannerChartInstance) plannerChartInstance.destroy();
-
-            plannerChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: 'Projected Portfolio Value',
-                            data: portfolioData,
-                            borderColor: '#06b6d4',
-                            backgroundColor: 'rgba(6, 182, 212, 0.1)',
-                            fill: true,
-                            tension: 0.3
-                        },
-                        {
-                            label: 'Capital Invested',
-                            data: investedData,
-                            borderColor: '#64748b',
-                            borderDash: [5, 5],
-                            backgroundColor: 'transparent',
-                            fill: false,
-                            tension: 0
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { labels: { color: '#94a3b8', font: { family: 'monospace' } } },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return context.dataset.label + ': ' + formatLKR(context.parsed.y);
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: { ticks: { color: '#64748b' }, grid: { color: '#1e293b' } },
-                        y: { ticks: { color: '#64748b' }, grid: { color: '#1e293b' } }
-                    }
-                }
-            });
-        }
-
-        // =========================================================================
-        // MODULE C: ACTUAL PORTFOLIO ANALYTICS & FINANCIAL ENGINES
-        // =========================================================================
-        function changeActiveStock(symbol) {
-            state.selectedSymbol = symbol;
-            saveState();
-            renderPortfolioModule();
-        }
-
-        function updateActiveStockTestPrice(val) {
-            const price = parseFloat(val);
-            if (!isNaN(price) && price > 0) {
-                state.testPrices[state.selectedSymbol] = price;
-                saveState();
-                renderPortfolioModule();
-                renderMarketTicker();
-            }
-        }
-
-        function calculateStockMetrics(symbol) {
-            const stockData = state.portfolio[symbol] || { purchases: [], dividends: [] };
-            const currentPrice = getMarketPrice(symbol);
-
-            let totalShares = 0;
-            let totalGrossBuyCost = 0;
-            let totalBuyFees = 0;
-
-            stockData.purchases.forEach(p => {
-                const gross = p.quantity * p.price;
-                const fee = gross * state.settings.buyFeeRate;
-                totalShares += p.quantity;
-                totalGrossBuyCost += gross;
-                totalBuyFees += fee;
-            });
-
-            const totalInvestedCapital = totalGrossBuyCost + totalBuyFees;
-            const weightedAvgPrice = totalShares > 0 ? totalGrossBuyCost / totalShares : 0;
-            const currentMarketValue = totalShares * currentPrice;
-
-            let totalDividends = 0;
-            stockData.dividends.forEach(d => {
-                totalDividends += (d.dps * d.eligibleShares);
-            });
-
-            const unrealizedPL = currentMarketValue - totalInvestedCapital;
-            const totalEconomicReturnLKR = unrealizedPL + totalDividends;
-            const totalReturnPct = totalInvestedCapital > 0 ? (totalEconomicReturnLKR / totalInvestedCapital) * 100 : 0;
-
-            // XIRR Calculation over dated cash flows
-            const cashFlows = [];
-            stockData.purchases.forEach(p => {
-                const gross = p.quantity * p.price;
-                const cost = gross * (1 + state.settings.buyFeeRate);
-                cashFlows.push({ date: new Date(p.date), amount: -cost });
-            });
-            stockData.dividends.forEach(d => {
-                cashFlows.push({ date: new Date(d.date), amount: d.dps * d.eligibleShares });
-            });
-            // Hypothetical final liquidation cash flow
-            if (totalShares > 0) {
-                const netExitProceeds = currentMarketValue * (1 - state.settings.sellFeeRate);
-                cashFlows.push({ date: new Date(), amount: netExitProceeds });
-            }
-
-            const xirrRate = calculateXIRR(cashFlows);
-
-            return {
-                symbol,
-                totalShares,
-                totalGrossBuyCost,
-                totalBuyFees,
-                totalInvestedCapital,
-                weightedAvgPrice,
-                currentPrice,
-                currentMarketValue,
-                totalDividends,
-                unrealizedPL,
-                totalEconomicReturnLKR,
-                totalReturnPct,
-                xirrRate
-            };
-        }
-
-        // Newton-Raphson XIRR Numerical Root Finder Algorithm
-        function calculateXIRR(cashFlows) {
-            if (cashFlows.length < 2) return 0;
-            let rate = 0.1; // Initial guess 10%
-            const maxIter = 100;
-            const tol = 1e-6;
-
-            const t0 = cashFlows[0].date;
-
-            for (let i = 0; i < maxIter; i++) {
-                let fValue = 0;
-                let fDerivative = 0;
-
-                for (let j = 0; j < cashFlows.length; j++) {
-                    const days = (cashFlows[j].date - t0) / (1000 * 60 * 60 * 24);
-                    const years = days / 365.0;
-                    const amount = cashFlows[j].amount;
-
-                    fValue += amount / Math.pow(1 + rate, years);
-                    fDerivative -= (years * amount) / Math.pow(1 + rate, years + 1);
-                }
-
-                const newRate = rate - fValue / fDerivative;
-                if (Math.abs(newRate - rate) < tol) return newRate * 100;
-                rate = newRate;
-            }
-            return rate * 100;
-        }
-
-        function renderPortfolioModule() {
-            const symbol = state.selectedSymbol;
-            const metrics = calculateStockMetrics(symbol);
-
-            // Populate Stock Selector Dropdown
-            const select = document.getElementById('selectedStockSelect');
-            select.innerHTML = DEMO_MARKET_DATA.map(s => 
-                `<option value="${s.symbol}" ${s.symbol === symbol ? 'selected' : ''}>${s.symbol} - ${s.name}</option>`
-            ).join('');
-
-            document.getElementById('demoBasePrice').innerText = formatLKR(DEMO_MARKET_DATA.find(s => s.symbol === symbol)?.price || 0);
-            document.getElementById('testMarketPriceInput').value = metrics.currentPrice.toFixed(2);
-            document.getElementById('summaryStockSymbol').innerText = symbol;
-
-            // Render Position Summary
-            document.getElementById('posTotalShares').innerText = metrics.totalShares.toLocaleString();
-            document.getElementById('posTotalInvested').innerText = formatLKR(metrics.totalInvestedCapital);
-            document.getElementById('posAvgPrice').innerText = formatLKR(metrics.weightedAvgPrice);
-            document.getElementById('posMarketValue').innerText = formatLKR(metrics.currentMarketValue);
-            document.getElementById('posTotalDividends').innerText = formatLKR(metrics.totalDividends);
-            
-            const pnlEl = document.getElementById('posUnrealizedPL');
-            pnlEl.innerText = formatLKR(metrics.unrealizedPL);
-            pnlEl.className = `text-sm font-bold mt-1 block ${metrics.unrealizedPL >= 0 ? 'text-emerald-400' : 'text-red-400'}`;
-
-            const retEl = document.getElementById('posTotalReturnPct');
-            retEl.innerText = formatPct(metrics.totalReturnPct);
-            retEl.className = `text-sm font-bold mt-1 block ${metrics.totalReturnPct >= 0 ? 'text-emerald-400' : 'text-red-400'}`;
-
-            document.getElementById('posAnnualizedReturnXIRR').innerText = formatPct(metrics.xirrRate);
-
-            // Render Purchase Table
-            renderPurchaseTable(symbol);
-            renderDividendTable(symbol);
-
-            // Render Quantitative Tools
-            updateSellSimulator(metrics);
-            calculateTargetPrice();
-            updateReentryCalculations();
-            renderScenarioMatrix(metrics);
-
-            // Render Portfolio Level Dashboard
-            renderAggregatedPortfolio();
-        }
-
-        function renderPurchaseTable(symbol) {
-            const purchases = state.portfolio[symbol]?.purchases || [];
-            const tbody = document.getElementById('purchaseTableBody');
-            tbody.innerHTML = '';
-
-            purchases.forEach((p, idx) => {
-                const gross = p.quantity * p.price;
-                const fee = gross * state.settings.buyFeeRate;
-                const total = gross + fee;
-
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-cardDark/60 transition";
-                tr.innerHTML = `
-                    <td class="py-2 px-3 text-slate-300">${p.date}</td>
-                    <td class="py-2 px-3 font-bold">${p.quantity}</td>
-                    <td class="py-2 px-3">${formatLKR(p.price)}</td>
-                    <td class="py-2 px-3">${formatLKR(gross)}</td>
-                    <td class="py-2 px-3 text-slate-400">${formatLKR(fee)}</td>
-                    <td class="py-2 px-3 font-bold text-cyanAccent">${formatLKR(total)}</td>
-                    <td class="py-2 px-3 text-right">
-                        <button onclick="deletePurchase('${symbol}', ${idx})" class="text-red-400 hover:text-red-300"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-            lucide.createIcons();
-        }
-
-        function handleAddPurchase(e) {
-            e.preventDefault();
-            const symbol = state.selectedSymbol;
-            const date = document.getElementById('buyDateInput').value;
-            const quantity = parseInt(document.getElementById('buyQtyInput').value);
-            const price = parseFloat(document.getElementById('buyPriceInput').value);
-
-            if (date && quantity > 0 && price > 0) {
-                state.portfolio[symbol].purchases.push({ id: 'p_' + Date.now(), date, quantity, price });
-                saveState();
-                renderPortfolioModule();
-                e.target.reset();
-            }
-        }
-
-        function deletePurchase(symbol, index) {
-            state.portfolio[symbol].purchases.splice(index, 1);
-            saveState();
-            renderPortfolioModule();
-        }
-
-        function renderDividendTable(symbol) {
-            const dividends = state.portfolio[symbol]?.dividends || [];
-            const tbody = document.getElementById('dividendTableBody');
-            tbody.innerHTML = '';
-
-            dividends.forEach((d, idx) => {
-                const total = d.dps * d.eligibleShares;
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-cardDark/60 transition";
-                tr.innerHTML = `
-                    <td class="py-2 px-3 text-slate-300">${d.date}</td>
-                    <td class="py-2 px-3 font-bold">${formatLKR(d.dps)}</td>
-                    <td class="py-2 px-3">${d.eligibleShares}</td>
-                    <td class="py-2 px-3 font-bold text-emerald-400">${formatLKR(total)}</td>
-                    <td class="py-2 px-3 text-right">
-                        <button onclick="deleteDividend('${symbol}', ${idx})" class="text-red-400 hover:text-red-300"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-            lucide.createIcons();
-        }
-
-        function handleAddDividend(e) {
-            e.preventDefault();
-            const symbol = state.selectedSymbol;
-            const date = document.getElementById('divDateInput').value;
-            const dps = parseFloat(document.getElementById('divDPSInput').value);
-            const eligibleShares = parseInt(document.getElementById('divSharesInput').value);
-
-            if (date && dps > 0 && eligibleShares > 0) {
-                state.portfolio[symbol].dividends.push({ id: 'd_' + Date.now(), date, dps, eligibleShares });
-                saveState();
-                renderPortfolioModule();
-                e.target.reset();
-            }
-        }
-
-        function deleteDividend(symbol, index) {
-            state.portfolio[symbol].dividends.splice(index, 1);
-            saveState();
-            renderPortfolioModule();
-        }
-
-        function toggleDividendCollapse() {
-            const body = document.getElementById('dividendSectionBody');
-            const icon = document.getElementById('divCollapseIcon');
-            body.classList.toggle('hidden');
-            icon.classList.toggle('rotate-180');
-        }
-
-        // Sell Simulator & Break-Even
-        function updateSellSimulator(metrics) {
-            const shares = metrics.totalShares;
-            const price = metrics.currentPrice;
-            const grossSale = shares * price;
-            const sellFee = grossSale * state.settings.sellFeeRate;
-            const netProceeds = grossSale - sellFee;
-            const netPL = netProceeds + metrics.totalDividends - metrics.totalInvestedCapital;
-
-            // Break Even Formula: (BreakEven * Shares) * (1 - sellFeeRate) + Dividends = Invested
-            let breakEven = 0;
-            if (shares > 0) {
-                breakEven = (metrics.totalInvestedCapital - metrics.totalDividends) / (shares * (1 - state.settings.sellFeeRate));
-            }
-
-            document.getElementById('simBreakEvenPrice').innerText = formatLKR(Math.max(0, breakEven));
-            document.getElementById('simGrossSaleValue').innerText = formatLKR(grossSale);
-            document.getElementById('simSellFee').innerText = formatLKR(sellFee);
-            document.getElementById('simNetProceeds').innerText = formatLKR(netProceeds);
-            
-            const plEl = document.getElementById('simNetProfitLoss');
-            plEl.innerText = formatLKR(netPL) + ` (${netPL >= 0 ? 'PROFIT' : 'LOSS'})`;
-            plEl.className = `text-sm font-black ${netPL >= 0 ? 'text-emerald-400' : 'text-red-400'}`;
-        }
-
-        // Target Price Calculator via numerical root finding
-        function calculateTargetPrice() {
-            const metrics = calculateStockMetrics(state.selectedSymbol);
-            if (metrics.totalShares === 0) {
-                document.getElementById('targetRequiredPrice').innerText = "Rs. 0.00";
-                return;
-            }
-
-            const targetReturnPct = parseFloat(document.getElementById('targetReturnInput').value) || 0;
-            const targetDateVal = document.getElementById('targetDateInput').value || new Date(Date.now() + 365*24*60*60*1000).toISOString().split('T')[0];
-
-            // Simple target price solver estimation
-            const targetRate = targetReturnPct / 100;
-            const purchases = state.portfolio[state.selectedSymbol].purchases;
-            if (purchases.length === 0) return;
-
-            const exitDate = new Date(targetDateVal);
-            const firstDate = new Date(purchases[0].date);
-            const years = Math.max(0.1, (exitDate - firstDate) / (1000 * 60 * 60 * 24 * 365));
-
-            const requiredFutureNetCash = metrics.totalInvestedCapital * Math.pow(1 + targetRate, years) - metrics.totalDividends;
-            const requiredGrossProceeds = requiredFutureNetCash / (1 - state.settings.sellFeeRate);
-            const requiredPrice = requiredGrossProceeds / metrics.totalShares;
-
-            document.getElementById('targetRequiredPrice').innerText = formatLKR(Math.max(0, requiredPrice));
-        }
-
-        // Re-Entry Strategy Calculations
-        function updateReentryCalculations() {
-            const metrics = calculateStockMetrics(state.selectedSymbol);
-            const salePrice = parseFloat(document.getElementById('reentrySalePriceInput').value) || metrics.currentPrice;
-            const reentryBuyPrice = parseFloat(document.getElementById('reentryBuyPriceInput').value) || (metrics.currentPrice * 0.9);
-
-            const netSaleProceeds = (metrics.totalShares * salePrice) * (1 - state.settings.sellFeeRate);
-            const effectiveBuyPricePerShare = reentryBuyPrice * (1 + state.settings.buyFeeRate);
-
-            // Strat 1: Capital Protection
-            const protectedCapital = metrics.totalInvestedCapital;
-            const maxSharesStrat1 = Math.floor(protectedCapital / effectiveBuyPricePerShare);
-            const costStrat1 = maxSharesStrat1 * effectiveBuyPricePerShare;
-            const remainingCashStrat1 = netSaleProceeds - costStrat1;
-
-            // Strat 2: Complete Reinvestment
-            const maxSharesStrat2 = Math.floor(netSaleProceeds / effectiveBuyPricePerShare);
-            const costStrat2 = maxSharesStrat2 * effectiveBuyPricePerShare;
-            const remainingCashStrat2 = netSaleProceeds - costStrat2;
-
-            // Strat 3: Lock-In Profit
-            const realizedProfit = Math.max(0, netSaleProceeds + metrics.totalDividends - metrics.totalInvestedCapital);
-            const capitalForReentryStrat3 = netSaleProceeds - realizedProfit;
-            const maxSharesStrat3 = Math.floor(capitalForReentryStrat3 / effectiveBuyPricePerShare);
-
-            document.getElementById('reentryStrat1Shares').innerText = maxSharesStrat1.toLocaleString();
-            document.getElementById('reentryStrat1Cash').innerText = formatLKR(Math.max(0, remainingCashStrat1));
-
-            document.getElementById('reentryStrat2Shares').innerText = maxSharesStrat2.toLocaleString();
-            document.getElementById('reentryStrat2Cash').innerText = formatLKR(Math.max(0, remainingCashStrat2));
-
-            document.getElementById('reentryStrat3ProfitCash').innerText = formatLKR(realizedProfit);
-            document.getElementById('reentryStrat3Shares').innerText = maxSharesStrat3.toLocaleString();
-        }
-
-        // Scenario Matrix Renderer
-        function renderScenarioMatrix(metrics) {
-            const tbody = document.getElementById('scenarioMatrixBody');
-            tbody.innerHTML = '';
-            if (metrics.totalShares === 0) return;
-
-            const basePrice = metrics.currentPrice;
-            const testPrices = [
-                basePrice * 0.8,
-                basePrice * 0.9,
-                basePrice,
-                basePrice * 1.1,
-                basePrice * 1.2
-            ];
-
-            testPrices.forEach(price => {
-                const gross = metrics.totalShares * price;
-                const net = gross * (1 - state.settings.sellFeeRate);
-                const netPL = net + metrics.totalDividends - metrics.totalInvestedCapital;
-                const retPct = (netPL / metrics.totalInvestedCapital) * 100;
-
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-cardDark/60 transition";
-                tr.innerHTML = `
-                    <td class="py-2 px-3 font-bold text-white">${formatLKR(price)}</td>
-                    <td class="py-2 px-3 text-slate-300">${formatLKR(gross)}</td>
-                    <td class="py-2 px-3 text-cyanAccent">${formatLKR(net)}</td>
-                    <td class="py-2 px-3 font-bold ${netPL >= 0 ? 'text-emerald-400' : 'text-red-400'}">${formatLKR(netPL)}</td>
-                    <td class="py-2 px-3 font-bold ${retPct >= 0 ? 'text-emerald-400' : 'text-red-400'}">${formatPct(retPct)}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        // Aggregated Portfolio Dashboard
-        function renderAggregatedPortfolio() {
-            let totalInvested = 0;
-            let totalMarketValue = 0;
-            let totalDividends = 0;
-
-            const tbody = document.getElementById('portfolioOverviewTableBody');
-            tbody.innerHTML = '';
-
-            DEMO_MARKET_DATA.forEach(stock => {
-                const m = calculateStockMetrics(stock.symbol);
-                if (m.totalShares > 0) {
-                    totalInvested += m.totalInvestedCapital;
-                    totalMarketValue += m.currentMarketValue;
-                    totalDividends += m.totalDividends;
-                }
-            });
-
-            const totalUnrealizedPL = totalMarketValue - totalInvested;
-            const totalReturnPct = totalInvested > 0 ? ((totalUnrealizedPL + totalDividends) / totalInvested) * 100 : 0;
-
-            document.getElementById('portAggInvested').innerText = formatLKR(totalInvested);
-            document.getElementById('portAggMarketValue').innerText = formatLKR(totalMarketValue);
-            document.getElementById('portAggDividends').innerText = formatLKR(totalDividends);
-            
-            const plEl = document.getElementById('portAggUnrealizedPL');
-            plEl.innerText = formatLKR(totalUnrealizedPL);
-            plEl.className = `text-sm font-bold mt-1 ${totalUnrealizedPL >= 0 ? 'text-emerald-400' : 'text-red-400'}`;
-
-            const retEl = document.getElementById('portAggReturnPct');
-            retEl.innerText = formatPct(totalReturnPct);
-            retEl.className = `text-sm font-bold mt-1 ${totalReturnPct >= 0 ? 'text-emerald-400' : 'text-red-400'}`;
-
-            DEMO_MARKET_DATA.forEach(stock => {
-                const m = calculateStockMetrics(stock.symbol);
-                if (m.totalShares > 0) {
-                    const allocPct = totalMarketValue > 0 ? (m.currentMarketValue / totalMarketValue) * 100 : 0;
-                    const tr = document.createElement('tr');
-                    tr.className = "hover:bg-cardDark/60 transition";
-                    tr.innerHTML = `
-                        <td class="py-2 px-3 font-bold text-cyanAccent">${m.symbol}</td>
-                        <td class="py-2 px-3">${m.totalShares}</td>
-                        <td class="py-2 px-3">${formatLKR(m.weightedAvgPrice)}</td>
-                        <td class="py-2 px-3">${formatLKR(m.totalInvestedCapital)}</td>
-                        <td class="py-2 px-3 text-cyanAccent">${formatLKR(m.currentMarketValue)}</td>
-                        <td class="py-2 px-3 text-emerald-400">${formatLKR(m.totalDividends)}</td>
-                        <td class="py-2 px-3 ${m.unrealizedPL >= 0 ? 'text-emerald-400' : 'text-red-400'}">${formatLKR(m.unrealizedPL)}</td>
-                        <td class="py-2 px-3 ${m.totalReturnPct >= 0 ? 'text-emerald-400' : 'text-red-400'}">${formatPct(m.totalReturnPct)}</td>
-                        <td class="py-2 px-3 font-bold text-goldAccent">${allocPct.toFixed(1)}%</td>
-                    `;
-                    tbody.appendChild(tr);
-                }
-            });
-        }
-
-        // Modals & Navigation Tabs
-        function switchTab(tab) {
-            state.activeTab = tab;
-            document.getElementById('tab-planner').className = tab === 'planner' 
-                ? 'tab-btn active py-3.5 px-1 font-semibold text-sm flex items-center space-x-2 transition'
-                : 'tab-btn py-3.5 px-1 font-semibold text-sm text-slate-400 hover:text-slate-200 flex items-center space-x-2 transition';
-            document.getElementById('tab-portfolio').className = tab === 'portfolio' 
-                ? 'tab-btn active py-3.5 px-1 font-semibold text-sm flex items-center space-x-2 transition'
-                : 'tab-btn py-3.5 px-1 font-semibold text-sm text-slate-400 hover:text-slate-200 flex items-center space-x-2 transition';
-
-            document.getElementById('view-planner').classList.toggle('hidden', tab !== 'planner');
-            document.getElementById('view-portfolio').classList.toggle('hidden', tab !== 'portfolio');
-        }
-
-        function openSettingsModal() {
-            document.getElementById('settingBuyFee').value = (state.settings.buyFeeRate * 100).toFixed(2);
-            document.getElementById('settingSellFee').value = (state.settings.sellFeeRate * 100).toFixed(2);
-            document.getElementById('settingsModal').classList.remove('hidden');
-        }
-
-        function closeSettingsModal() {
-            document.getElementById('settingsModal').classList.add('hidden');
-        }
-
-        function saveSettings() {
-            const buy = parseFloat(document.getElementById('settingBuyFee').value) / 100;
-            const sell = parseFloat(document.getElementById('settingSellFee').value) / 100;
-            if (!isNaN(buy) && !isNaN(sell)) {
-                state.settings.buyFeeRate = buy;
-                state.settings.sellFeeRate = sell;
-                saveState();
-                closeSettingsModal();
-                renderPortfolioModule();
-            }
-        }
-
-        // Application Initialization
-        function initApp() {
-            loadState();
-            renderMarketTicker();
-            updatePlanner();
-            renderPortfolioModule();
-            
-            // Default target date 1 year out
-            document.getElementById('targetDateInput').value = new Date(Date.now() + 365*24*60*60*1000).toISOString().split('T')[0];
-            document.getElementById('buyDateInput').value = new Date().toISOString().split('T')[0];
-            document.getElementById('divDateInput').value = new Date().toISOString().split('T')[0];
-
-            lucide.createIcons();
-        }
-
-        window.onload = initApp;
-    </script>
+      };
+      reader.readAsText(file);
+    }
+
+    function resetApplicationState() {
+      if (confirm('Are you sure you want to reset all portfolio data to defaults?')) {
+        localStorage.removeItem('CSE_WEALTH_LAB_STATE');
+        location.reload();
+      }
+    }
+  </script>
 </body>
 </html>
