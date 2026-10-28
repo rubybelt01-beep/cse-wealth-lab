@@ -1,0 +1,56 @@
+<!-- Help Button (Place this in your header next to settings) -->
+<button onclick="toggleHelpModal()" class="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 transition" title="User Manual">
+  <i data-lucide="help-circle" class="w-5 h-5"></i>
+</button>
+
+<!-- Help Modal Container -->
+<div id="helpModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+  <div class="bg-[#131b2e] border border-slate-800 rounded-xl max-w-2xl w-full p-6 space-y-4 shadow-2xl max-h-[85vh] flex flex-col">
+    
+    <!-- Modal Header -->
+    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+      <h3 class="font-bold text-white flex items-center gap-2 text-base">
+        <i data-lucide="book-open" class="w-5 h-5 text-cyan-400"></i> CSE වෙල්ත් ලැබ් — පරිශීලක අත්පොත
+      </h3>
+      <button onclick="toggleHelpModal()" class="text-slate-400 hover:text-white text-xl font-bold">&times;</button>
+    </div>
+    
+    <!-- Modal Content (Scrollable Manual) -->
+    <div class="overflow-y-auto space-y-4 text-xs text-slate-300 pr-2 scrollbar-thin">
+      <p class="text-slate-400">කොළඹ කොටස් වෙළඳපොළේ (CSE) සිල්ලර ආයෝජකයින් සඳහාම විශේෂයෙන් සකස් කරන ලද සැහැල්ලු කළඹ කළමනාකරණ සහ ධන සැලසුම් වෙබ් යෙදුම වෙත සාදරයෙන් පිළිගනිමු.</p>
+      
+      <div class="space-y-2">
+        <h4 class="font-bold text-cyan-400 text-sm">1. ආරම්භ කිරීම සහ දත්ත ක්‍රම (Data Modes)</h4>
+        <p>යෙදුමේ ඉහළ දකුණු කෙළවරේ ඇති බොත්තම් භාවිතයෙන් ඔබට දත්ත ක්‍රම දෙකක් අතර මාරු විය හැක:</p>
+        <ul class="list-disc pl-4 space-y-1">
+          <li><strong>Demo / Offline Mode:</strong> අන්තර්ජාලය නොමැතිව වුවද පරීක්ෂා කර බැලීම සඳහා, ක්ෂණිකව පූරණය වන අංශ අනුව වර්ග කළ CSE කොටස් සහ මූලික මිල ගණන් පෙන්වයි.</li>
+          <li><strong>Live CSE Data Mode:</strong> ප්‍රොක්සි හරහා CSE API වෙත සම්බන්ධ වෙමින් සජීවී කොටස් වෙළඳපොළ මිල ගණන් ලබා ගැනීමට උත්සාහ කරයි.</li>
+        </ul>
+      </div>
+
+      <div class="space-y-2">
+        <h4 class="font-bold text-cyan-400 text-sm">2. ඔබේ කළඹ කළමනාකරණය කරගැනීම (1 වන ටැබය)</h4>
+        <p><strong>পියවර 1: අංශය අනුව කොටසක් තෝරා ගැනීම</strong> - ඉහළ වම්පස ඇති ඩ්‍රොප්ඩවුන් මෙනුව හරහා කර්මාන්ත අංශ යටතේ වර්ග කර ඇති කොටස් තෝරාගත හැක.</p>
+        <p><strong>පියවර 2: මිලදී ගැනීම් ඇතුළත් කිරීම</strong> - 'Purchase Lots Logger' වගුව හරහා මිලදීගත් දිනය, ප්‍රමාණය සහ මිල ඇතුළත් කර ස්වයංක්‍රීය බ්‍රෝකර් ගාස්තු සමඟ කළඹට එකතු කරන්න.</p>
+        <p><strong>පියවර 3: ලාභාංශ වාර්තා කිරීම</strong> - 'Dividend Receipts' කාඩ්පත භාවිතයෙන් ලැබෙන ලාභාංශ සටහන් කරගත හැක.</p>
+        <p><strong>පියවර 4: තත්ත්ව විශ්ලේෂණය</strong> - Position Analytics, Target Return Calculator, සහ Re-Entry Strategy Simulator මඟින් ඔබේ ආයෝජන මැනවින් කළමනාකරණය කරගත හැක.</p>
+      </div>
+
+      <div class="space-y-2">
+        <h4 class="font-bold text-cyan-400 text-sm">3. අනාගත ධන සැලසුම්කරු (2 වන ටැබය)</h4>
+        <p>Future Wealth Planner ටැබය හරහා මුල් ආයෝජනය, මාසික දායකත්වයන් සහ අපේක්ෂිත වාර්ෂික ප්‍රතිලාභ මත පදනම් වූ සංයුක්ත වර්ධන (Compound Growth) ප්‍රස්ථාර සහ වසරින් වසර වටිනාකම් පරීක්ෂා කළ හැක.</p>
+      </div>
+
+      <div class="space-y-2">
+        <h4 class="font-bold text-cyan-400 text-sm">4. සැකසුම් සහ දත්ත කළමනාකරණය</h4>
+        <p>ගියර් නිරූපකය (`⚙️`) හරහා බ්‍රෝකර් ගාස්තු වෙනස් කරගැනීමටත්, පහළ පාදයේ ඇති බොත්තම් මඟින් JSON බැකප් ලබා ගැනීමට හෝ දත්ත ඉවත් කර නැවත ආරම්භ කිරීමටත් හැක.</p>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="flex justify-end pt-2 border-t border-slate-800">
+      <button onclick="toggleHelpModal()" class="px-4 py-2 rounded bg-cyan-600 text-xs text-white font-medium hover:bg-cyan-500">වසා දමන්න (Close)</button>
+    </div>
+    
+  </div>
+</div>
