@@ -40,7 +40,7 @@
         <div>
           <h1 class="text-xl font-bold tracking-wider text-white flex items-center gap-2">
             CSE WEALTH LAB
-            <span class="text-xs px-2 py-0.5 rounded-full bg-cyan-950 text-cyan-400 border border-cyan-800/50">PUBLIC</span>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-cyan-950 text-cyan-400 border border-cyan-800/50">PRO</span>
           </h1>
           <p class="text-xs text-slate-400">Colombo Stock Exchange Portfolio & Wealth Engine</p>
         </div>
@@ -78,7 +78,7 @@
     <!-- GLOBAL SELECTOR & SUMMARY -->
     <section class="grid grid-cols-1 md:grid-cols-4 gap-4">
       <div class="bg-[#131b2e] border border-slate-800 rounded-xl p-4 shadow-xl">
-        <label class="text-xs text-slate-400 font-medium block mb-1">Select Active Stock (By Sector)</label>
+        <label class="text-xs text-slate-400 font-medium block mb-1">Select Active Stock (Sector Sorted)</label>
         <select id="stockSelector" onchange="handleStockSelect(this.value)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-cyan-400 font-bold focus:ring-2 focus:ring-cyan-500 outline-none">
           <!-- Dynamically Injected Optgroups -->
         </select>
@@ -473,24 +473,84 @@
   <script>
     let liveStockData = {};
 
-    // CATEGORIZED FALLBACK SECTOR DATA
+    // COMPREHENSIVE CSE SECTOR DEFAULTS EXTRACTED FROM MARKET VALUATION GUIDES
     const SECTOR_DEFAULTS = {
-      "BANKS & FINANCIALS": {
-        SAMP: { name: "Sampath Bank PLC", price: 139.00 },
-        COMB: { name: "Commercial Bank PLC", price: 104.50 },
-        HNB: { name: "Hatton National Bank PLC", price: 285.00 },
-        LOLC: { name: "LOLC Holdings PLC", price: 395.00 }
+      "BANKS": {
+        SAMP: { name: "Sampath Bank PLC", price: 139.25 },
+        COMB: { name: "Commercial Bank of Ceylon PLC", price: 198.25 },
+        HNB: { name: "Hatton National Bank PLC", price: 375.00 },
+        NDB: { name: "National Development Bank PLC", price: 105.50 },
+        SEYB: { name: "Seylan Bank PLC", price: 88.20 },
+        NTB: { name: "Nations Trust Bank PLC", price: 299.00 },
+        DFCC: { name: "DFCC Bank PLC", price: 118.80 },
+        PABC: { name: "Pan Asia Banking Corporation PLC", price: 48.70 },
+        SDB: { name: "Sanasa Development Bank PLC", price: 46.80 },
+        UBC: { name: "Union Bank of Colombo PLC", price: 10.80 }
       },
       "CAPITAL GOODS": {
-        JKH: { name: "John Keells Holdings PLC", price: 25.10 },
-        HAYL: { name: "Hayleys PLC", price: 98.20 }
+        JKH: { name: "John Keells Holdings PLC", price: 17.70 },
+        HAYL: { name: "Hayleys PLC", price: 221.25 },
+        ACL: { name: "ACL Cables PLC", price: 88.20 },
+        AEL: { name: "Access Engineering PLC", price: 77.20 },
+        CERA: { name: "Lanka Ceramic PLC", price: 172.80 },
+        DOCK: { name: "Colombo Dockyard PLC", price: 110.00 }
       },
-      "TELECOMMUNICATION": {
-        DIAL: { name: "Dialog Axiata PLC", price: 12.40 }
+      "DIVERSIFIED FINANCIALS": {
+        LFIN: { name: "LB Finance PLC", price: 145.50 },
+        COCR: { name: "Commercial Credit and Finance PLC", price: 91.60 },
+        CFIN: { name: "Central Finance Company PLC", price: 195.00 },
+        CALT: { name: "Capital Alliance PLC", price: 42.10 },
+        CDB: { name: "Citizens Development Business Finance PLC", price: 33.00 },
+        LOFC: { name: "LOLC Finance PLC", price: 4.70 },
+        LOLC: { name: "LOLC Holdings PLC", price: 408.00 },
+        PLC: { name: "People's Leasing Company PLC", price: 17.20 },
+        VFIN: { name: "Vallibel Finance PLC", price: 78.10 }
       },
       "FOOD, BEVERAGE & TOBACCO": {
-        MELS: { name: "Melstacorp PLC", price: 75.80 },
-        DIST: { name: "Distilleries Company PLC", price: 32.50 }
+        CCS: { name: "Ceylon Cold Stores PLC", price: 122.00 },
+        CTC: { name: "Ceylon Tobacco Company PLC", price: 1781.80 },
+        DIST: { name: "Distilleries Company of Sri Lanka PLC", price: 52.10 },
+        MELS: { name: "Melstacorp Limited", price: 178.50 },
+        NEST: { name: "Nestle Lanka PLC", price: 1500.00 },
+        LON: { name: "The Lion Brewery Ceylon PLC", price: 1816.00 },
+        SUN: { name: "Sunshine Holdings PLC", price: 28.20 }
+      },
+      "CONSUMER DURABLES & APPAREL": {
+        HAYC: { name: "Haycarb PLC", price: 204.00 },
+        MGT: { name: "Hayleys Fabric PLC", price: 25.90 },
+        TJL: { name: "Teejay Lanka PLC", price: 28.40 },
+        DIPD: { name: "Dipped Products PLC", price: 57.70 },
+        RCL: { name: "Royal Ceramics Lanka PLC", price: 41.50 },
+        PKME: { name: "Digital Mobility Solutions Lanka PLC (PickMe)", price: 152.25 }
+      },
+      "CONSUMER SERVICES": {
+        AHUN: { name: "Aitken Spence Hotel Holdings PLC", price: 78.90 },
+        KHL: { name: "John Keells Hotels PLC", price: 14.90 },
+        AHPL: { name: "Asian Hotels and Properties PLC", price: 44.30 },
+        SERV: { name: "The Kingsbury PLC", price: 12.80 }
+      },
+      "TELECOMMUNICATIONS": {
+        DIAL: { name: "Dialog Axiata PLC", price: 43.00 },
+        SLTL: { name: "Sri Lanka Telecom PLC", price: 79.50 }
+      },
+      "MATERIALS": {
+        ALUM: { name: "Alumex PLC", price: 15.50 },
+        LLUB: { name: "Chevron Lubricants Lanka PLC", price: 204.00 }
+      },
+      "HEALTH CARE": {
+        ASIR: { name: "Asiri Hospital Holdings PLC", price: 25.00 },
+        AMSL: { name: "Asiri Surgical Hospital PLC", price: 10.00 },
+        LHCL: { name: "The Lanka Hospital Corporation PLC", price: 113.00 }
+      },
+      "INSURANCE": {
+        AAIC: { name: "Softlogic Life Insurance PLC", price: 74.10 },
+        UAL: { name: "Union Assurance PLC", price: 66.40 },
+        HASU: { name: "HNB Assurance PLC", price: 140.00 }
+      },
+      "UTILITIES": {
+        VLL: { name: "Vidullanka PLC", price: 21.80 },
+        VPEL: { name: "Vallibel Power Erathna PLC", price: 14.50 },
+        WIND: { name: "Windforce Limited", price: 36.90 }
       }
     };
 
@@ -546,7 +606,6 @@
       }
     }
 
-    // MULTI-PROXY RESILIENT FETCH ENGINE
     async function loadCategorizedStockData() {
       if (appState.isDemoMode) {
         renderDefaultCategorizedSectors();
@@ -564,7 +623,7 @@
         });
         if (response.ok) data = await response.json();
       } catch (e) {
-        console.warn('Primary CORS proxy failed, trying fallback.');
+        console.warn('Primary CORS proxy failed, falling back to structured sector defaults.');
       }
 
       if (Array.isArray(data) && data.length > 0) {
