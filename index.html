@@ -40,14 +40,24 @@
         <div>
           <h1 class="text-xl font-bold tracking-wider text-white flex items-center gap-2">
             CSE WEALTH LAB
-            <span class="text-xs px-2 py-0.5 rounded-full bg-cyan-950 text-cyan-400 border border-cyan-800/50">PUBLIC PORTFOLIO</span>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-cyan-950 text-cyan-400 border border-cyan-800/50">PRO PORTFOLIO</span>
           </h1>
           <p class="text-xs text-slate-400">Colombo Stock Exchange Tracker & Wealth Planner</p>
         </div>
       </div>
 
-      <!-- Controls -->
-      <div class="flex items-center space-x-3">
+      <!-- Market Index Badges & Controls -->
+      <div class="flex items-center space-x-4">
+        <div class="hidden xl:flex items-center space-x-3 bg-slate-950/60 border border-slate-800 px-3 py-1.5 rounded-lg text-xs">
+          <div>
+            <span class="text-slate-500">ASPI:</span> <strong id="aspiVal" class="text-emerald-400">19,692.67</strong>
+          </div>
+          <span class="text-slate-700">|</span>
+          <div>
+            <span class="text-slate-500">S&P SL20:</span> <strong id="snpVal" class="text-cyan-400">5,612.31</strong>
+          </div>
+        </div>
+
         <div class="flex items-center bg-slate-900 border border-slate-700/60 rounded-lg p-1 text-xs">
           <button id="modeDemoBtn" onclick="toggleDataMode(true)" class="px-3 py-1 rounded-md transition-all font-medium">DEMO MODE</button>
           <button id="modeLiveBtn" onclick="toggleDataMode(false)" class="px-3 py-1 rounded-md transition-all font-medium">LIVE CSE DATA</button>
@@ -215,7 +225,7 @@
 
       </div>
 
-      <!-- LOGGERS -->
+      <!-- LOGGERS & SECTOR ALLOCATION CHART -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         <!-- Purchase Lots Form & Table -->
@@ -264,6 +274,22 @@
           </div>
         </div>
 
+        <!-- Sector Allocation Breakdown Card -->
+        <div class="bg-[#131b2e] border border-slate-800 rounded-xl p-5 shadow-xl space-y-4 flex flex-col justify-between">
+          <h3 class="font-bold text-white text-sm border-b border-slate-800 pb-2 flex items-center gap-2">
+            <i data-lucide="pie-chart" class="w-4 h-4 text-cyan-400"></i> Sector Allocation Exposure
+          </h3>
+          <div class="relative h-48 w-full flex items-center justify-center">
+            <canvas id="sectorChart"></canvas>
+          </div>
+          <div class="text-[11px] text-slate-400 text-center">Diversification tracking across CSE industries.</div>
+        </div>
+
+      </div>
+
+      <!-- DIVIDENDS & PORTFOLIO TABLE -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
         <!-- Dividend Logger -->
         <div class="bg-[#131b2e] border border-slate-800 rounded-xl p-5 shadow-xl space-y-4">
           <h3 class="font-bold text-white text-sm border-b border-slate-800 pb-3 flex items-center gap-2">
@@ -305,34 +331,34 @@
           </div>
         </div>
 
-      </div>
-
-      <!-- PORTFOLIO OVERVIEW TABLE -->
-      <div class="bg-[#131b2e] border border-slate-800 rounded-xl p-5 shadow-xl space-y-4">
-        <h3 class="font-bold text-white text-sm border-b border-slate-800 pb-3 flex items-center justify-between">
-          <span>Overall Multi-Stock Portfolio Summary</span>
-          <span class="text-xs font-normal text-slate-400">All Logged Equities</span>
-        </h3>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-xs border-collapse">
-            <thead>
-              <tr class="border-b border-slate-800 text-slate-400 bg-slate-900/40">
-                <th class="py-2.5 px-3">Symbol</th>
-                <th class="py-2.5 px-3">Shares</th>
-                <th class="py-2.5 px-3">Avg Cost</th>
-                <th class="py-2.5 px-3">Total Invested</th>
-                <th class="py-2.5 px-3">Market Value</th>
-                <th class="py-2.5 px-3">Unrealized P/L</th>
-                <th class="py-2.5 px-3">Dividends</th>
-                <th class="py-2.5 px-3">Return %</th>
-                <th class="py-2.5 px-3">XIRR</th>
-              </tr>
-            </thead>
-            <tbody id="portfolioOverviewTable" class="divide-y divide-slate-800/60">
-              <!-- Injected via JS -->
-            </tbody>
-          </table>
+        <!-- Portfolio Overview Table -->
+        <div class="lg:col-span-2 bg-[#131b2e] border border-slate-800 rounded-xl p-5 shadow-xl space-y-4">
+          <h3 class="font-bold text-white text-sm border-b border-slate-800 pb-3 flex items-center justify-between">
+            <span>Overall Multi-Stock Portfolio Summary</span>
+            <span class="text-xs font-normal text-slate-400">All Logged Equities</span>
+          </h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="border-b border-slate-800 text-slate-400 bg-slate-900/40">
+                  <th class="py-2.5 px-3">Symbol</th>
+                  <th class="py-2.5 px-3">Shares</th>
+                  <th class="py-2.5 px-3">Avg Cost</th>
+                  <th class="py-2.5 px-3">Total Invested</th>
+                  <th class="py-2.5 px-3">Market Value</th>
+                  <th class="py-2.5 px-3">Unrealized P/L</th>
+                  <th class="py-2.5 px-3">Dividends</th>
+                  <th class="py-2.5 px-3">Return %</th>
+                  <th class="py-2.5 px-3">XIRR</th>
+                </tr>
+              </thead>
+              <tbody id="portfolioOverviewTable" class="divide-y divide-slate-800/60">
+                <!-- Injected via JS -->
+              </tbody>
+            </table>
+          </div>
         </div>
+
       </div>
 
     </div>
@@ -472,6 +498,7 @@
   <!-- SCRIPT ENGINE -->
   <script>
     let liveStockData = {};
+    let stockSectorMap = {};
 
     const SECTOR_DEFAULTS = {
       "BANKS": {
@@ -516,7 +543,7 @@
     };
 
     let appState = {
-      isDemoMode: true, // Default to demo for instant offline reliability
+      isDemoMode: true,
       selectedStock: 'SAMP',
       settings: { buyFeeRate: 0.0112, sellFeeRate: 0.0112 },
       customPrices: {},
@@ -524,6 +551,7 @@
     };
 
     let wealthChartInstance = null;
+    let sectorChartInstance = null;
 
     function formatLKR(val) {
       if (isNaN(val) || val === null) return 'Rs. 0.00';
@@ -586,6 +614,7 @@
 
         if (shortSymbol && price > 0) {
           liveStockData[shortSymbol] = price;
+          stockSectorMap[shortSymbol] = sector;
           if (!groupedSectors[sector]) groupedSectors[sector] = [];
           groupedSectors[sector].push({ symbol: shortSymbol, name: item.name || shortSymbol, price: price });
         }
@@ -625,6 +654,7 @@
         Object.keys(SECTOR_DEFAULTS[sec]).forEach(sym => {
           const item = SECTOR_DEFAULTS[sec][sym];
           liveStockData[sym] = item.price;
+          stockSectorMap[sym] = sec;
 
           const opt = document.createElement('option');
           opt.value = sym;
@@ -1012,6 +1042,7 @@
 
       let grandTotalValue = 0, grandTotalInvested = 0, grandTotalDividends = 0;
       let hasActivePositions = false;
+      let sectorAllocations = {};
 
       for (const sym of Object.keys(appState.portfolio)) {
         const pos = appState.portfolio[sym];
@@ -1025,6 +1056,10 @@
           grandTotalValue += summary.currentGrossValue;
           grandTotalInvested += summary.totalInvestedCapital;
           grandTotalDividends += summary.totalDividends;
+
+          // Track sector distribution
+          const sector = stockSectorMap[sym] || 'OTHER EQUITIES';
+          sectorAllocations[sector] = (sectorAllocations[sector] || 0) + summary.currentGrossValue;
 
           const tr = document.createElement('tr');
           tr.className = 'hover:bg-slate-900/40 border-b border-slate-800/40';
@@ -1056,6 +1091,41 @@
       const plEl = document.getElementById('totalPortfolioReturn');
       plEl.innerText = `P/L: ${formatLKR(netPL)} (${returnPct.toFixed(2)}%)`;
       plEl.className = netPL >= 0 ? 'text-xs mt-1 text-emerald-400 font-medium' : 'text-xs mt-1 text-rose-400 font-medium';
+
+      renderSectorChart(sectorAllocations);
+    }
+
+    function renderSectorChart(sectorData) {
+      const ctx = document.getElementById('sectorChart').getContext('2d');
+      if (sectorChartInstance) sectorChartInstance.destroy();
+
+      const labels = Object.keys(sectorData);
+      const data = Object.values(sectorData);
+
+      if (labels.length === 0) {
+        labels.push('No Holdings');
+        data.push(1);
+      }
+
+      sectorChartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: labels,
+          datasets: [{
+            data: data,
+            backgroundColor: ['#06b6d4', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#64748b'],
+            borderWidth: 1,
+            borderColor: '#131b2e'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 10 }, boxWidth: 12 } }
+          }
+        }
+      });
     }
 
     function calculatePlanner() {
