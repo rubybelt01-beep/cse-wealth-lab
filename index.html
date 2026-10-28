@@ -467,10 +467,195 @@
 
   </main>
 
+<!-- User Manual -->
+
+<div class="flex items-center gap-2">
+  <button
+    onclick="toggleHelpModal(true)"
+    class="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 transition"
+    title="User Manual"
+    aria-label="Open User Manual">
+    <i data-lucide="help-circle" class="w-5 h-5"></i>
+  </button>
+
+  <button
+    onclick="toggleSettingsModal()"
+    class="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 transition"
+    title="Settings"
+    aria-label="Open Settings">
+    <i data-lucide="settings" class="w-5 h-5"></i>
+  </button>
+</div>
+
+  <!-- USER MANUAL MODAL -->
+<div
+  id="helpModal"
+  class="fixed inset-0 z-[60] hidden items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="helpModalTitle"
+>
+  <div class="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border border-slate-700 bg-slate-900 text-slate-200 shadow-2xl">
+
+    <!-- Header -->
+    <div class="sticky top-0 z-10 flex items-center justify-between border-b border-slate-700 bg-slate-900 p-5">
+      <h2 id="helpModalTitle" class="text-lg font-bold text-white">
+        <i data-lucide="book-open" class="mr-2 inline h-5 w-5"></i>
+        CSE Wealth Lab — පරිශීලක අත්පොත
+      </h2>
+
+      <button
+        onclick="toggleHelpModal(false)"
+        class="rounded-lg p-2 text-slate-400 hover:bg-slate-800 hover:text-white"
+        aria-label="Close User Manual"
+      >
+        <i data-lucide="x" class="h-5 w-5"></i>
+      </button>
+    </div>
+
+    <!-- Manual Content -->
+    <div class="space-y-6 p-5 text-sm leading-7">
+
+      <section>
+        <h3 class="mb-2 font-bold text-sky-400">1. CSE Wealth Lab යනු කුමක්ද?</h3>
+        <p>
+          ඔබගේ කොළඹ කොටස් වෙළෙඳපොළ (CSE) ආයෝජන,
+          ලාභාංශ සහ අනාගත ධනය පිළිබඳ ඇස්තමේන්තු නිරීක්ෂණය
+          කිරීමට භාවිත කළ හැකි මෙවලමකි.
+        </p>
+      </section>
+
+      <section>
+        <h3 class="mb-2 font-bold text-sky-400">2. DEMO MODE සහ LIVE CSE DATA</h3>
+        <ul class="list-disc space-y-1 pl-5">
+          <li><strong>DEMO MODE:</strong> පරීක්ෂණ සහ උදාහරණ සඳහා මිල දත්ත භාවිත කරයි.</li>
+          <li><strong>LIVE CSE DATA:</strong> වෙළෙඳපොළ දත්ත ලබාගැනීමට උත්සාහ කරයි.</li>
+          <li>දත්ත ලබාගැනීම අසාර්ථක වුවහොත් පැරණි හෝ පෙරනිමි මිල දත්ත පෙන්විය හැකිය.</li>
+          <li>ආයෝජන තීරණ ගැනීමට පෙර මිල සහ දත්තවල නිරවද්‍යතාව වෙනම තහවුරු කරන්න.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h3 class="mb-2 font-bold text-sky-400">3. Portfolio — ඔබගේ ආයෝජන</h3>
+        <p>
+          අදාළ කොටස් සංකේතය තෝරා මිලදී ගත් කොටස් ගණන සහ
+          මිලදී ගැනීමේ මිල ඇතුළත් කරන්න. ඔබ ඇතුළත් කළ
+          ගනුදෙනු අනුව පෙන්වන Portfolio අගයන් පරීක්ෂා කරන්න.
+        </p>
+        <p class="mt-2 text-amber-300">
+          සටහන: මෙම අනුවාදයේ සැබෑ විකුණුම් ගනුදෙනු සටහන් කිරීමේ
+          පහසුකමක් නොමැති නම්, විකුණුම් සිදු කළ විට දත්ත ඒ අනුව
+          යාවත්කාලීන නොවිය හැකිය.
+        </p>
+      </section>
+
+      <section>
+        <h3 class="mb-2 font-bold text-sky-400">4. Dividends — ලාභාංශ</h3>
+        <p>
+          ඔබට ලැබුණු ලාභාංශ පිළිබඳ තොරතුරු ඇතුළත් කර,
+          යෙදුම පෙන්වන ලාභාංශ සාරාංශය පරීක්ෂා කරන්න.
+          ඇතුළත් කරන මුදල් සහ කොටස් ගණන නිවැරදි බව තහවුරු කරන්න.
+        </p>
+      </section>
+
+      <section>
+        <h3 class="mb-2 font-bold text-sky-400">5. Future Wealth Planner</h3>
+        <p>
+          මාසික ආයෝජනය, ආයෝජන කාලය සහ අපේක්ෂිත වාර්ෂික
+          ප්‍රතිලාභ අනුපාතය ඇතුළත් කර අනාගත ආයෝජන වටිනාකම
+          පිළිබඳ ඇස්තමේන්තුවක් ලබාගන්න.
+        </p>
+        <p class="mt-2 text-amber-300">
+          ප්‍රක්ෂේපණ සහතික කළ ප්‍රතිඵල නොවේ. උද්ධමනය,
+          බදු සහ ගනුදෙනු ගාස්තු ගණනයට ඇතුළත් නොවිය හැකිය.
+        </p>
+      </section>
+
+      <section>
+        <h3 class="mb-2 font-bold text-sky-400">6. Target Return සහ Re-Entry</h3>
+        <p>
+          ඉලක්කගත ප්‍රතිලාභ සහ නැවත ආයෝජනය පිළිබඳ ගණනය කිරීම්
+          සැලසුම් කිරීම සඳහා භාවිත කරන්න. මෙවැනි ගණනය කිරීම්
+          සැබෑ විකුණුම් හෝ නැවත මිලදී ගැනීම් සිදු කළ බව
+          තහවුරු නොකරයි.
+        </p>
+      </section>
+
+      <section>
+        <h3 class="mb-2 font-bold text-sky-400">7. දත්ත සුරැකීම සහ Backup</h3>
+        <ul class="list-disc space-y-1 pl-5">
+          <li>යෙදුමේ දත්ත ඔබගේ browser හි localStorage තුළ සුරැකිය හැකිය.</li>
+          <li>Settings තුළ ඇති JSON Export පහසුකමෙන් Backup එකක් ලබාගන්න.</li>
+          <li>JSON Import භාවිත කර කලින් Export කළ දත්ත නැවත ලබාගන්න.</li>
+          <li>Clear Local Data භාවිත කිරීමට පෙර අවශ්‍ය දත්ත Backup කරන්න.</li>
+          <li>Browser දත්ත මකා දැමීම හෝ වෙනත් උපකරණයක් භාවිත කිරීම නිසා දත්ත අහිමි විය හැකිය.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h3 class="mb-2 font-bold text-sky-400">8. වැදගත් අවවාදය</h3>
+        <p>
+          මෙම යෙදුම ආයෝජන සැලසුම් කිරීම සහ තොරතුරු නිරීක්ෂණය
+          සඳහා වන මෙවලමකි. මෙය ආයෝජන උපදෙස් නොවන අතර
+          නිල CSE දත්ත මූලාශ්‍රයක් බවට සහතිකයක් ද නොවේ.
+          ආයෝජනය කිරීමට පෙර තොරතුරු ස්වාධීනව තහවුරු කරන්න.
+        </p>
+      </section>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="sticky bottom-0 border-t border-slate-700 bg-slate-900 p-4 text-right">
+      <button
+        onclick="toggleHelpModal(false)"
+        class="rounded-lg bg-sky-600 px-5 py-2 font-semibold text-white transition hover:bg-sky-500"
+      >
+        තේරුණා — Close
+      </button>
+    </div>
+
+  </div>
+</div>
+
+  function toggleHelpModal(show) {
+  const modal = document.getElementById('helpModal');
+
+  if (!modal) return;
+
+  const open = typeof show === 'boolean'
+    ? show
+    : modal.classList.contains('hidden');
+
+  modal.classList.toggle('hidden', !open);
+  modal.classList.toggle('flex', open);
+  document.body.classList.toggle('overflow-hidden', open);
+}
+
+// Close when clicking the dark background.
+document.getElementById('helpModal')?.addEventListener('click', function (event) {
+  if (event.target === this) {
+    toggleHelpModal(false);
+  }
+});
+
+// Close with Escape.
+document.addEventListener('keydown', function (event) {
+  if (event.key === 'Escape') {
+    const modal = document.getElementById('helpModal');
+
+    if (modal && !modal.classList.contains('hidden')) {
+      toggleHelpModal(false);
+    }
+  }
+});
+          
+  
+  
   <!-- SETTINGS MODAL -->
-<button onclick="toggleHelpModal()" class="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 transition" title="User Manual">
-  <i data-lucide="help-circle" class="w-5 h-5"></i>
-</button>
+
+
+
+  
   
   <div id="settingsModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
     <div class="bg-[#131b2e] border border-slate-800 rounded-xl max-w-md w-full p-6 space-y-4 shadow-2xl">
